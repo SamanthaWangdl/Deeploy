@@ -14,17 +14,17 @@ from Deeploy.FutureExtension.CodeTransformationPasses.FutureCodeTransformation i
 from Deeploy.Targets.Generic.Templates import AddTemplate, BatchNormalizationTemplate, ConcatTemplate, ConvTemplate, \
     ConvTransposeTemplate, DebugPrintTemplate, DequantTemplate, DummyTemplate, DWConvTemplate, FloatAddTemplate, \
     FloatConvTemplate, FloatDivTemplate, FloatDWConvTemplate, FloatGELUTemplate, FloatGemmTemplate, \
-    FloatLayernormTemplate, FloatMatMulTemplate, FloatMaxPoolTemplate, FloatMulTemplate, FloatPadTemplate, \
-    FloatReduceMeanTemplate, FloatReluTemplate, FloatSoftmaxTemplate, GatherTemplate, GemmTemplate, \
-    IntegerDivTemplate, ITAMaxTemplate, ITAPartialMaxTemplate, MatMulTemplate, MaxPoolTemplate, MulTemplate, \
-    PadTemplate, QuantTemplate, ReduceMeanTemplate, ReduceSumTemplate, RequantShiftTemplate, ReshapeTemplate, \
-    RQIntegerDivTemplate, RQSiGELUTemplate, SliceTemplate, TransposeTemplate, iGELUTemplate, iLayernormTemplate, \
-    iRMSNormTemplate, iSoftmaxTemplate
+    FloatLayernormTemplate, FloatMatMulTemplate, FloatMaxPoolTemplate, FloatAveragePoolTemplate, \
+    FloatMulTemplate, FloatPadTemplate, FloatReduceMeanTemplate, FloatReluTemplate, FloatSoftmaxTemplate, \
+    GatherTemplate, GemmTemplate, IntegerDivTemplate, ITAMaxTemplate, ITAPartialMaxTemplate, MatMulTemplate, \
+    MaxPoolTemplate, MulTemplate, PadTemplate, QuantTemplate, ReduceMeanTemplate, ReduceSumTemplate, \
+    RequantShiftTemplate, ReshapeTemplate, RQIntegerDivTemplate, RQSiGELUTemplate, SliceTemplate, TransposeTemplate, \
+    iGELUTemplate, iLayernormTemplate, iRMSNormTemplate, iSoftmaxTemplate
 from Deeploy.Targets.Generic.TypeCheckers import AddChecker, BatchNormChecker, ConcatChecker, ConvChecker, \
     DebugPrintChecker, DequantChecker, DivChecker, DummyChecker, GatherChecker, GELUChecker, GEMMChecker, \
-    LayerNormChecker, MatMulChecker, MaxPoolChecker, MulChecker, PadChecker, QuantChecker, ReduceMeanChecker, \
-    ReduceSumChecker, ReluChecker, RequantShiftChecker, ReshapeChecker, RQIntegerDivChecker, SliceChecker, \
-    SoftmaxChecker, TransposeChecker
+    LayerNormChecker, MatMulChecker, MaxPoolChecker, AveragePoolChecker, MulChecker, PadChecker, \
+    QuantChecker, ReduceMeanChecker, ReduceSumChecker, ReluChecker, RequantShiftChecker, ReshapeChecker, \
+    RQIntegerDivChecker, SliceChecker, SoftmaxChecker, TransposeChecker
 
 BasicTransformer = CodeTransformation([ArgumentStructGeneration(), MemoryManagementGeneration(), FutureGeneration()])
 
@@ -165,6 +165,11 @@ BasicMaxPool2DBindings = [
 ] + [
     NodeBinding(MaxPoolChecker([PointerClass(float32_t)], [PointerClass(float32_t)]),
                 FloatMaxPoolTemplate.referenceTemplate, BasicTransformer)
+]
+
+BasicAveragePool2DBindings = [
+    NodeBinding(AveragePoolChecker([PointerClass(float32_t)], [PointerClass(float32_t)]),
+                FloatAveragePoolTemplate.referenceTemplate, BasicTransformer)
 ]
 
 BasicMulBindings = [

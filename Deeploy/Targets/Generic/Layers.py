@@ -58,6 +58,18 @@ class GELULayer(ONNXLayer):
         return mul1 + neg + exp + add + div + mul2
 
 
+class GELUGradLayer(ONNXLayer):
+
+    def __init__(self, maps: List[NodeMapper]):
+        super().__init__(maps)
+
+    def computeOps(self):
+        size = self.mapper.parser.operatorRepresentation['size']
+        ops_per_element = 9
+        gelu_grad_ops = size * ops_per_element
+        return gelu_grad_ops
+
+
 class iHardswishLayer(ONNXLayer):
 
     def __init__(self, maps: List[NodeMapper]):
@@ -390,6 +402,16 @@ class MaxPoolLayer(ONNXLayer):
         total_ops = data_out_size * comparisons_per_window
         return total_ops
 
+class AveragePoolLayer(ONNXLayer):
+
+    def __init__(self, maps: List[NodeMapper]):
+        super().__init__(maps)
+
+class AveragePoolGradLayer(ONNXLayer):
+
+    def __init__(self, maps: List[NodeMapper]):
+        super().__init__(maps)
+
 
 class ReduceMeanLayer(ONNXLayer):
 
@@ -423,6 +445,15 @@ class ReluLayer(ONNXLayer):
         return self.mapper.parser.operatorRepresentation['size']
 
 
+class ReluGradLayer(ONNXLayer):
+
+    def __init__(self, maps: List[NodeMapper]):
+        super().__init__(maps)
+
+    def computeOps(self):
+        return self.mapper.parser.operatorRepresentation['size']
+
+
 class LayerNormLayer(ONNXLayer):
 
     def __init__(self, maps: List[NodeMapper]):
@@ -436,6 +467,12 @@ class LayerNormLayer(ONNXLayer):
         compSqrt = self.mapper.parser.operatorRepresentation['size']
         compDiv = self.mapper.parser.operatorRepresentation['size']
         return compAverage + compNormalize + compSqr + compSum + compSqrt + compDiv
+
+
+class LayerNormGradLayer(ONNXLayer):
+
+    def __init__(self, maps: List[NodeMapper]):
+        super().__init__(maps)
 
 
 class TransposeLayer(ONNXLayer):
@@ -460,6 +497,11 @@ class SGDLayer(ONNXLayer):
 
     def __init__(self, maps: List[NodeMapper]):
         super().__init__(maps)
+
+    def computeOps(self):
+
+        size = self.mapper.parser.operatorRepresentation['size']
+        return size * 2
 
 
 class LinearAttentionLayer(ONNXLayer):
