@@ -16,9 +16,16 @@ if __name__ == "__main__":
                         default = 8,
                         help = 'Set number of cluster cores')
 
+    parser.add_argument('--simulator',
+                        metavar = '<simulator>',
+                        dest = 'simulator',
+                        choices = ['gvsoc', 'board'],
+                        default = 'gvsoc',
+                        help = 'Select simulator or board deployment (default: gvsoc)')
+
     args = parser.parse_args()
 
-    testRunner = TestRunner(platform = "GAP9", simulator = "gvsoc", tiling = True, argument_parser = parser)
+    testRunner = TestRunner(platform = "GAP9", simulator = args.simulator, tiling = True, argument_parser = parser)
 
     testRunner.cmake_args += f" -D NUM_CORES={args.cores}"
     testRunner.run()

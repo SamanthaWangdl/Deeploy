@@ -22,13 +22,20 @@ if __name__ == "__main__":
                         default = False,
                         help = 'Profile Untiled')
 
+    parser.add_argument('--simulator',
+                        metavar = '<simulator>',
+                        dest = 'simulator',
+                        choices = ['gvsoc', 'board'],
+                        default = 'gvsoc',
+                        help = 'Select simulator or board deployment (default: gvsoc)')
+
     # Set default GVSOC install dir
     for action in parser._actions:
         if action.dest == 'gvsoc_install_dir':
             action.default = "${GAP_SDK_HOME}/install/workstation"
     args = parser.parse_args()
 
-    testRunner = TestRunner(platform = "GAP9", simulator = "gvsoc", tiling = False, argument_parser = parser)
+    testRunner = TestRunner(platform = "GAP9", simulator = args.simulator, tiling = False, argument_parser = parser)
 
     testRunner.cmake_args += f" -D NUM_CORES={args.cores}"
     testRunner.run()
