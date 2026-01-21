@@ -59,5 +59,30 @@ target_compile_options(pulp-nn-mixed PRIVATE -Wno-error)
 target_link_libraries(deeploygap9 PUBLIC pulp-nn-mixed)
 target_link_libraries(pulp-nn-mixed PUBLIC pmsis)
 
+# Add pulp-trainlib integration
+target_include_directories(deeploygap9 PUBLIC
+  ${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/include
+)
+
+# Add necessary pulp-trainlib sources for ConvGradW
+file(GLOB PULP_TRAINLIB_CONV_SOURCES
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_conv2d_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_im2col_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_conv_dw_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_conv_pw_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_matmul_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_train_utils_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_conv_naive_fp32.c"
+)
+target_sources(deeploygap9 PRIVATE ${PULP_TRAINLIB_CONV_SOURCES})
+
+# Fix compilation issues with pulp-trainlib sources
+# Undefine USE_DMA and define float16alt to avoid conflicts
+# Disable strict-aliasing warnings for type-punned pointer usage
+set_source_files_properties(${PULP_TRAINLIB_CONV_SOURCES}
+  PROPERTIES
+  COMPILE_FLAGS "-UUSE_DMA -Dfloat16alt=float -fno-strict-aliasing"
+)
+
 target_link_libraries(deeploygap9 PUBLIC m)
 

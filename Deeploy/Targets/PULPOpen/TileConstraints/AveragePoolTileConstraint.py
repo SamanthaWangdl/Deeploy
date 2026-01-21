@@ -154,6 +154,8 @@ class AveragePoolHWTileConstraint(TileConstraint):
         return variableReplacementSchedule, tilingSchedule
 
 
+
+
 # RW: This constraint tiles the channels of avgpool, which avoids issues with padding margin calculations
 #  when the default memory level is L3.
 

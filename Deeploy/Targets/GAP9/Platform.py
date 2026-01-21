@@ -22,27 +22,35 @@ from Deeploy.Targets.GAP9.Tiler import GAP9AddTilingReadyBindings, GAP9ConcatTil
     GAP9RQSTallGEMMTilingReadyBindings, GAP9RQSTilingReadyBindings, GAP9SGDTilingReadyBindings, \
     GAP9SoftmaxCrossEntropyGradTilingReadyBindings, GAP9SoftmaxCrossEntropyTilingReadyBindings, \
     GAP9SoftmaxGradTilingReadyBindings, GAP9SoftmaxTilingReadyBindings, GAP9TransposeTilingReadyBindings, \
-    GAP9UniformRQSTilingReadyBindings
+    GAP9UniformRQSTilingReadyBindings, GAP9ConvGradX2DTilingReadyBindings, GAP9ConvGradW2DTilingReadyBindings, \
+    GAP9DWConvGradX2DTilingReadyBindings, GAP9DWConvGradW2DTilingReadyBindings, GAP9PWConvGradX2DTilingReadyBindings, \
+    GAP9PWConvGradW2DTilingReadyBindings, GAP9ReluGradTilingReadyBindings, GAP9AveragePool2DTilingReadyBindings, \
+    GAP9AveragePoolGrad2DTilingReadyBindings, GAP9ConvGradX2DNoTilingReadyBindings, GAP9LayernormGradTilingReadyBindings
 from Deeploy.Targets.Generic.Bindings import BasicGEMMBindings, BasicPad1DBindings, BasicPad2DBindings, \
     BasicRQIntegerDivBinding
-from Deeploy.Targets.Generic.Layers import AddLayer, ConcatLayer, ConvLayer, GatherLayer, GELULayer, GEMMLayer, \
-    LayerNormLayer, MatMulLayer, MaxPoolLayer, MulLayer, PadLayer, QuantLayer, ReduceMeanLayer, ReduceSumLayer, \
-    ReluLayer, RequantShiftLayer, ReshapeLayer, RQIntegerDivLayer, RQSiGELULayer, RQSiHardswishLayer, SGDLayer, \
-    SliceLayer, SoftmaxCrossEntropyLossGradLayer, SoftmaxCrossEntropyLossLayer, SoftmaxGradLayer, SoftmaxLayer, \
-    TransposeLayer, iHardswishLayer, iRMSNormLayer
+from Deeploy.Targets.Generic.Layers import AddLayer, ConcatLayer, ConvLayer, ConvGradXLayer, ConvGradWLayer, \
+    GatherLayer, GELUGradLayer, GELULayer, GEMMLayer, LayerNormGradLayer, LayerNormLayer, MatMulLayer, MaxPoolLayer, \
+    MulLayer, PadLayer, QuantLayer, ReduceMeanLayer, ReduceSumLayer, ReluLayer, ReluGradLayer, RequantShiftLayer, \
+    ReshapeLayer, RQIntegerDivLayer, RQSiGELULayer, RQSiHardswishLayer, SGDLayer, SliceLayer, \
+    SoftmaxCrossEntropyLossGradLayer, SoftmaxCrossEntropyLossLayer, SoftmaxGradLayer, SoftmaxLayer, TransposeLayer, \
+    iHardswishLayer, iRMSNormLayer, AveragePoolLayer, AveragePoolGradLayer
 from Deeploy.Targets.Generic.Parsers import AddParser, ConcatParser, DequantParser, FlattenParser, GatherParser, \
-    GELUParser, GEMMParser, LayerNormParser, MatMulParser, MaxPool2DParser, MulParser, Pad1DParser, Pad2DParser, \
-    QuantParser, ReduceMeanParser, ReduceSumParser, ReluParser, RequantShiftParser, ReshapeParser, RQAddParser, \
-    RQIntegerDivParser, RQSiGELUParser, RQSiHardswishParser, SGDParser, SliceParser, \
-    SoftmaxCrossEntropyLossGradParser, SoftmaxCrossEntropyLossParser, SoftmaxGradParser, SoftmaxParser, \
-    TransposeParser, UniformRequantShiftParser, UnsqueezeParser, iHardswishParser, iRMSNormParser, iSoftmaxParser
+    GELUGradParser, GELUParser, GEMMParser, AveragePool2DParser, LayerNormGradParser, LayerNormParser, \
+    MatMulParser, MaxPool2DParser, MulParser, Pad1DParser, Pad2DParser, QuantParser, ReduceMeanParser, \
+    ReduceSumParser, ReluParser, ReluGradParser, RequantShiftParser, ReshapeParser, RQAddParser, RQIntegerDivParser, \
+    RQSiGELUParser, RQSiHardswishParser, SGDParser, SliceParser, SoftmaxCrossEntropyLossGradParser, \
+    SoftmaxCrossEntropyLossParser, SoftmaxGradParser, SoftmaxParser, TransposeParser, UniformRequantShiftParser, \
+    UnsqueezeParser, iHardswishParser, iRMSNormParser, iSoftmaxParser
 from Deeploy.Targets.Generic.Templates import AllocateTemplate as BasicAllocateTemplate
 from Deeploy.Targets.PULPOpen.Bindings import BasicDequantBindings, BasicQuantBindings, PULPConv1DBinding, \
     PULPDMASliceBindings, PULPDWConv1DBinding, PULPReduceMeanBindings, PULPSliceBindings
 from Deeploy.Targets.PULPOpen.Layers import PULPRQSConvLayer, PULPRQSGEMMLayer
 from Deeploy.Targets.PULPOpen.Parsers import PULPConv1DParser, PULPConv2DParser, PULPDWConv1DParser, \
     PULPDWConv2DParser, PULPFPConv2DParser, PULPFPDWConv2DParser, PULPGEMMParser, PULPMatrixVecParser, \
-    PULPTallGEMMParser
+    PULPTallGEMMParser, PULPConvGradX2DParser, PULPConvGradW2DParser, PULPDWConvGradX2DParser, \
+    PULPDWConvGradW2DParser, PULPPWConvGradW2DParser, PULPPWConvGradX2DParser, PULPConvGradX2DSmallParser
+
+
 
 # Create GAP9-specific NodeMappers
 GAP9_RQAddMapper = NodeMapper(RQAddParser(), GAP9RQAddTilingReadyBindings)
@@ -94,10 +102,25 @@ GAP9_QuantMapper = NodeMapper(QuantParser(), BasicQuantBindings)
 GAP9_DequantMapper = NodeMapper(DequantParser(), BasicDequantBindings)
 GAP9_GEMMDequantMapper = NodeMapper(PULPGEMMParser(), BasicGEMMBindings)
 
+ConvGradXMapper = NodeMapper(PULPConvGradX2DParser(), GAP9ConvGradX2DTilingReadyBindings)
+ConvGradXSmallMapper = NodeMapper(PULPConvGradX2DSmallParser(), GAP9ConvGradX2DNoTilingReadyBindings)
+DwConvGradxMapper = NodeMapper(PULPDWConvGradX2DParser(), GAP9DWConvGradX2DTilingReadyBindings)
+PWConvGradX2DMapper = NodeMapper(PULPPWConvGradX2DParser(), GAP9PWConvGradX2DTilingReadyBindings)
+ConvGradWMapper = NodeMapper(PULPConvGradW2DParser(), GAP9ConvGradW2DTilingReadyBindings)
+DwConvGradWMapper = NodeMapper(PULPDWConvGradW2DParser(), GAP9DWConvGradW2DTilingReadyBindings)
+PWConvGradW2DMapper = NodeMapper(PULPPWConvGradW2DParser(), GAP9PWConvGradW2DTilingReadyBindings)
+ReluGradMapper = NodeMapper(ReluGradParser(), GAP9ReluGradTilingReadyBindings)
+AveragePool2DMapper = NodeMapper(AveragePool2DParser(), GAP9AveragePool2DTilingReadyBindings)
+AveragePoolGrad2DMapper = NodeMapper(AveragePool2DParser(), GAP9AveragePoolGrad2DTilingReadyBindings)
+LayerNormGradMapper = NodeMapper(LayerNormGradParser(), GAP9LayernormGradTilingReadyBindings)
 # GAP9-specific mapping using ClDma
 GAP9Mapping = {
+    'AveragePool': AveragePoolLayer([AveragePool2DMapper]),
+    'AveragePoolGrad': AveragePoolGradLayer([AveragePoolGrad2DMapper]),
     'Conv':
         ConvLayer([GAP9_FPConv2DMapper, GAP9_FPDWConv2DMapper]),
+    'ConvGradX': ConvGradXLayer([PWConvGradX2DMapper, DwConvGradxMapper, ConvGradXMapper]),
+    'ConvGradW': ConvGradWLayer([PWConvGradW2DMapper, DwConvGradWMapper, ConvGradWMapper]),
     'RequantizedConv':
         PULPRQSConvLayer([GAP9_Conv2DMapper, GAP9_DWConv2DMapper, GAP9_Conv1DMapper, GAP9_DWConv1DMapper]),
     'RequantizedGemm':
@@ -108,6 +131,7 @@ GAP9Mapping = {
         GELULayer([GAP9_GELUMapper]),
     'LayerNormalization':
         LayerNormLayer([GAP9_LayerNormMapper]),
+    'LayerNormalizationGrad': LayerNormGradLayer([LayerNormGradMapper]),
     'MaxPool':
         MaxPoolLayer([GAP9_MaxPool2DMapper]),
     'RequantizediGELU':
@@ -140,6 +164,7 @@ GAP9Mapping = {
         PadLayer([GAP9_Pad1DMapper, GAP9_Pad2DMapper]),
     'Relu':
         ReluLayer([GAP9_ReluMapper]),
+    'ReluGrad': ReluGradLayer([ReluGradMapper]),
     'Reshape':
         ReshapeLayer([GAP9_ReshapeMapper]),
     'Squeeze':

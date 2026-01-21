@@ -487,6 +487,40 @@ class PULPConvGradX2DParser(Conv2DGradXParser):
         return ctxt, False
 
 
+class PULPConvGradX2DSmallParser(PULPConvGradX2DParser):
+    """
+    Small version of ConvGradX for tensors with HW <= 16.
+    This avoids tiling conflicts by keeping everything in L1.
+    """
+
+    def __init__(self, noBiasHoisting = True, max_hw_size = 16):
+        super().__init__(noBiasHoisting)
+        self.max_hw_size = max_hw_size
+
+    def parseNode(self, node: gs.Node) -> bool:
+        # First check if it's a valid ConvGradX node
+        ret = super().parseNode(node)
+        if not ret:
+            return False
+
+        # Check if grad_in (dX) has small spatial dimensions
+        grad_in_name = self.operatorRepresentation.get('grad_in', '')
+        if grad_in_name and hasattr(node, 'inputs'):
+            # Try to get shape from node inputs
+            for inp in node.inputs:
+                if inp.name == grad_in_name and hasattr(inp, 'shape') and inp.shape is not None:
+                    # Shape is typically [N, C, H, W]
+                    if len(inp.shape) >= 3:
+                        h = inp.shape[-2] if isinstance(inp.shape[-2], int) else None
+                        w = inp.shape[-1] if isinstance(inp.shape[-1], int) else None
+                        if h is not None and w is not None:
+                            # Only match if BOTH H and W are <= max_hw_size
+                            return h <= self.max_hw_size and w <= self.max_hw_size
+
+        # If we can't determine size, don't match (let regular parser handle it)
+        return False
+
+
 class PULPDWConvGradX2DParser(PULPConvGradX2DParser):
 
     def __init__(self, noBiasHoisting = True):
