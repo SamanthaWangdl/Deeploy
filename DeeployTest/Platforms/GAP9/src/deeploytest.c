@@ -19,6 +19,10 @@
 struct pi_device cluster_dev;
 uint32_t total_cycles = 0;
 
+unsigned int GPIOs = 89;
+#define WRITE_GPIO(x) pi_gpio_pin_write(GPIOs,x)
+
+
 typedef struct {
   void *expected;
   void *actual;
@@ -78,6 +82,15 @@ void RunNetworkWrapper(void *args) {
 }
 
 int main(void) {
+
+  pi_pad_function_set(GPIOs, 1);
+  pi_gpio_pin_configure(GPIOs, PI_GPIO_OUTPUT);
+  pi_gpio_pin_write(GPIOs, 0);
+  WRITE_GPIO(0);
+
+  pi_freq_set(PI_FREQ_DOMAIN_FC, 370*1000*1000);
+  pi_freq_set(PI_FREQ_DOMAIN_CL, 370*1000*1000);
+
 #ifndef CI
   uint32_t core_id = pi_core_id(), cluster_id = pi_cluster_id();
   printf("[%d %d] Hello World!\n", cluster_id, core_id);
@@ -119,7 +132,10 @@ int main(void) {
 
   pi_cluster_task(&cluster_task, RunNetworkWrapper, NULL);
   cluster_task.slave_stack_size = SLAVESTACKSIZE;
+
+  WRITE_GPIO(1);
   pi_cluster_send_task_to_cl(&cluster_dev, &cluster_task);
+  WRITE_GPIO(0);
 
 #ifndef CI
   printf("Output:\r\n");
