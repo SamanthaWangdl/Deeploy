@@ -105,14 +105,20 @@ class GAP9MchanDma(AsyncDma):
             mchanFlags += (1 << 1)  # increment addresses
             mchanFlags += (1 << 3)  # event enable
             template = self._transferTemplates[1]
+            # Explicitly mangle the buffer names: see Siracusa MchanDma for the
+            # same fix — _mangleOpRepr only rewrites plain buffer names, so a
+            # string like "((char*)foo + 0)" would ship without the
+            # DeeployNetwork_ prefix and fail to compile.
+            locName = ctxt._mangle(localBuffer.name)
+            extName = ctxt._mangle(externalBuffer.name)
             chunks: List[CodeSnippet] = []
             offset = 0
             while offset < totalSize:
                 chunkSize = min(self._MAX_1D_TRANSFER_BYTES, totalSize - offset)
                 cmd = (mchanFlags << 17) + chunkSize
                 opRepr: OperatorRepresentation = {
-                    "loc": f"((char*){localBuffer.name} + {offset})",
-                    "ext": f"((char*){externalBuffer.name} + {offset})",
+                    "loc": f"((char*){locName} + {offset})",
+                    "ext": f"((char*){extName} + {offset})",
                     "future": future.name,
                     "cmd": cmd,
                     "size": chunkSize,

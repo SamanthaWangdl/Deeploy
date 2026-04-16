@@ -91,14 +91,24 @@ class MchanDma(AsyncDma):
             mchanFlags += (1 << 1)  # increment addresses
             mchanFlags += (1 << 3)  # event enable
             template = self._transferTemplates[1]
+            # Use the network-prefixed buffer name so the emitted C references
+            # the variable that was actually declared (e.g.
+            # DeeployNetwork_TILING_CODEGEN_L1_foo_ref) rather than the raw
+            # buffer.name.  The mangling normally happens inside
+            # ExecutionBlock._mangleOpRepr, but that pass only rewrites values
+            # that match is_buffer() — a formatted string like
+            # "((char*)foo + 0)" escapes the rewrite and produces undeclared
+            # identifier build errors for any weight/tile >131072 bytes.
+            locName = ctxt._mangle(localBuffer.name)
+            extName = ctxt._mangle(externalBuffer.name)
             chunks: List[CodeSnippet] = []
             offset = 0
             while offset < totalSize:
                 chunkSize = min(self._MAX_1D_TRANSFER_BYTES, totalSize - offset)
                 cmd = (mchanFlags << 17) + chunkSize
                 opRepr: OperatorRepresentation = {
-                    "loc": f"((char*){localBuffer.name} + {offset})",
-                    "ext": f"((char*){externalBuffer.name} + {offset})",
+                    "loc": f"((char*){locName} + {offset})",
+                    "ext": f"((char*){extName} + {offset})",
                     "future": future.name,
                     "cmd": cmd,
                 }
