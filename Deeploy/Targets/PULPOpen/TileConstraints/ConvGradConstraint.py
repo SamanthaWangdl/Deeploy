@@ -575,8 +575,9 @@ class ConvGradWTileConstraintBase(TileConstraint):
     def addPolicyConstraint(cls, tilerModel: TilerModel, parseDict: Dict, ctxt: NetworkContext) -> TilerModel:
         """
         Default policy:
-          - keep full Cin/Cout on X and dY
-          - dW output is full (no tiling) because accumulation
+          - keep full Cin on X
+          - allow C_out tiling on dY and dW[0] (dW[co] slices are independent per co)
+          - keep dW Cin/kH/kW full (contiguous slice along leading C_out axis)
           - kernel dims fixed (no tiling)
           - allow H/W tiling on dY (and derived halo on X)
         """
@@ -585,15 +586,13 @@ class ConvGradWTileConstraintBase(TileConstraint):
         dwName = parseDict[cls.weightKey]
 
         xBuf = ctxt.lookup(xName)
-        dyBuf = ctxt.lookup(dyName)
         dwBuf = ctxt.lookup(dwName)
 
-        # Full channels for inputs
-        tilerModel.addConstraint(tilerModel.getTensorDimVar(xName, 1) == xBuf.shape[1])   # Cin
-        tilerModel.addConstraint(tilerModel.getTensorDimVar(dyName, 1) == dyBuf.shape[1]) # Cout
+        # Full Cin on X (reduction axis for dW is spatial, Cin is independent per output channel)
+        tilerModel.addConstraint(tilerModel.getTensorDimVar(xName, 1) == xBuf.shape[1])
 
-        # dW is full (all dims)
-        for d in range(len(dwBuf.shape)):
+        # dW: keep Cin / kH / kW full; allow C_out (dim 0) to tile
+        for d in range(1, len(dwBuf.shape)):
             tilerModel.addConstraint(tilerModel.getTensorDimVar(dwName, d) == dwBuf.shape[d])
 
         # dY tile spatial dims >= 1
@@ -800,49 +799,65 @@ class ConvGradWTileConstraintBase(TileConstraint):
         Cin_full = xFull[1]
         Cout_full = dyFull[1]
 
-        # dW is full cube (accumulation target)
-        fullDW = HyperRectangle((0, 0, 0, 0), dwShape)
+        # C_out tile size from tiler solution (falls back to full when not tiled)
+        try:
+            dwTileShape = tilingSolution.tensorMemoryConstraints[dwName].memoryConstraints[targetMemLevel].shape
+            Cout_tile_max = dwTileShape[0]
+        except Exception:
+            Cout_tile_max = Cout_full
+
+        co_tiles: List[Tuple[int, int]] = []
+        co = 0
+        while co < Cout_full:
+            cs = min(Cout_tile_max, Cout_full - co)
+            co_tiles.append((co, cs))
+            co += cs
 
         inputLoadSchedule = []
         outputLoadSchedule = []
 
-        # Build tiles
-        for hoOff, hoSz in h_tiles:
-            for woOff, woSz in w_tiles:
-                dyTile = HyperRectangle(
-                    (0, 0, hoOff, woOff),
-                    (N_tile, Cout_full, hoSz, woSz),
-                )
+        # Build tiles: outer loop over C_out, inner over spatial
+        for coOff, coSz in co_tiles:
+            dwTile = HyperRectangle(
+                (coOff, 0, 0, 0),
+                (coSz, dwShape[1], dwShape[2], dwShape[3]),
+            )
+            for hoOff, hoSz in h_tiles:
+                for woOff, woSz in w_tiles:
+                    dyTile = HyperRectangle(
+                        (0, coOff, hoOff, woOff),
+                        (N_tile, coSz, hoSz, woSz),
+                    )
 
-                xTile, (tpt, tpb, tpl, tpr) = cls.computeInputTileFromGradOutTile(
-                    kernel_hw=(dwShape[2], dwShape[3]),
-                    pads=pads,
-                    strides=strides,
-                    inputCSize=Cin_full,
-                    gradOutTile=dyTile,
-                    inputFull=xFull,
-                    gradOutFull=dyFull,
-                )
+                    xTile, (tpt, tpb, tpl, tpr) = cls.computeInputTileFromGradOutTile(
+                        kernel_hw=(dwShape[2], dwShape[3]),
+                        pads=pads,
+                        strides=strides,
+                        inputCSize=Cin_full,
+                        gradOutTile=dyTile,
+                        inputFull=xFull,
+                        gradOutFull=dyFull,
+                    )
 
-                # dims (x=H, y=W)
-                replacements["dim_im_in_x"].append(xTile.dims[2])
-                replacements["dim_im_in_y"].append(xTile.dims[3])
-                replacements["dim_im_out_x"].append(dyTile.dims[2])
-                replacements["dim_im_out_y"].append(dyTile.dims[3])
+                    # dims (x=H, y=W)
+                    replacements["dim_im_in_x"].append(xTile.dims[2])
+                    replacements["dim_im_in_y"].append(xTile.dims[3])
+                    replacements["dim_im_out_x"].append(dyTile.dims[2])
+                    replacements["dim_im_out_y"].append(dyTile.dims[3])
 
-                replacements["ch_im_in"].append(Cin_full)
-                replacements["ch_im_out"].append(Cout_full)
+                    replacements["ch_im_in"].append(Cin_full)
+                    replacements["ch_im_out"].append(coSz)
 
-                # ONNX pads (t,b,l,r) -> unified naming:
-                # padding_y_top/bottom : H dimension => top/bottom
-                # padding_x_left/right : W dimension => left/right
-                replacements["padding_y_top"].append(tpt)      # H_begin = top
-                replacements["padding_y_bottom"].append(tpb)   # H_end   = bottom
-                replacements["padding_x_left"].append(tpl)     # W_begin = left
-                replacements["padding_x_right"].append(tpr)    # W_end   = right
+                    # ONNX pads (t,b,l,r) -> unified naming:
+                    # padding_y_top/bottom : H dimension => top/bottom
+                    # padding_x_left/right : W dimension => left/right
+                    replacements["padding_y_top"].append(tpt)      # H_begin = top
+                    replacements["padding_y_bottom"].append(tpb)   # H_end   = bottom
+                    replacements["padding_x_left"].append(tpl)     # W_begin = left
+                    replacements["padding_x_right"].append(tpr)    # W_end   = right
 
-                inputLoadSchedule.append({cls.dataInKey: xTile, cls.gradOutKey: dyTile})
-                outputLoadSchedule.append({cls.weightKey: fullDW})
+                    inputLoadSchedule.append({cls.dataInKey: xTile, cls.gradOutKey: dyTile})
+                    outputLoadSchedule.append({cls.weightKey: dwTile})
 
         tilingSchedule = TilingSchedule(inputBaseOffsets, outputBaseOffsets, inputLoadSchedule, outputLoadSchedule)
         variableReplacementSchedule = VariableReplacementScheme(replacements, replacementTypes)
