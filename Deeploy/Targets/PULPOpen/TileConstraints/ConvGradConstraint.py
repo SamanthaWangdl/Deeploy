@@ -68,25 +68,29 @@ class ConvGradXTileConstraintBase(TileConstraint):
     def addPolicyConstraint(cls, tilerModel: TilerModel, parseDict: Dict, ctxt: NetworkContext) -> TilerModel:
         """
         Default policy:
-          - keep full Cin/Cout
-          - weight not tiled
+          - keep full Cout on dY (Cout is the reduction axis in dX = sum_co dY * W)
+          - allow C_in tiling on dX and W[1] in lockstep (Cin is the output axis
+            of ConvGradX: each C_in slice of dX is independent and reads the
+            corresponding C_in slice of W). For a regular conv (group=1) the
+            existing geometrical constraint already pins dxName[1] == wName[1],
+            so dropping the policy full-pins lets them tile together. For DW
+            the geometrical constraint pins dxName[1] == 1 * group, which keeps
+            dxName[1] full (depthwise channel tiling handled separately).
+          - weight kernel dims (kH, kW) stay full
           - allow spatial tiling on dX
         """
         dyName = parseDict[cls.gradOutKey]
-        dxName = parseDict[cls.gradInKey]
         wName  = parseDict[cls.weightKey]
 
         dyBuf = ctxt.lookup(dyName)
-        dxBuf = ctxt.lookup(dxName)
         wBuf  = ctxt.lookup(wName)
 
-        # full channels
-        tilerModel.addConstraint(tilerModel.getTensorDimVar(dyName, 1) == dyBuf.shape[1])  # Cout full
-        tilerModel.addConstraint(tilerModel.getTensorDimVar(dxName, 1) == dxBuf.shape[1])  # Cin full
+        # Cout full on dY (reduction axis for ConvGradX)
+        tilerModel.addConstraint(tilerModel.getTensorDimVar(dyName, 1) == dyBuf.shape[1])
 
-        # weight not tiled
+        # Weight: C_out full (matches Cout reduction axis), kH/kW full
+        # Cin (wName.dim[1]) allowed to tile in lockstep with dxName.dim[1]
         tilerModel.addConstraint(tilerModel.getTensorDimVar(wName, 0) == wBuf.shape[0])
-        tilerModel.addConstraint(tilerModel.getTensorDimVar(wName, 1) == wBuf.shape[1])
         tilerModel.addConstraint(tilerModel.getTensorDimVar(wName, 2) == wBuf.shape[2])
         tilerModel.addConstraint(tilerModel.getTensorDimVar(wName, 3) == wBuf.shape[3])
 
@@ -352,9 +356,6 @@ class ConvGradXTileConstraintBase(TileConstraint):
         inputWCubes:  List[HyperRectangle] = []
         outputDxCubes: List[HyperRectangle] = []
 
-        fullW = HyperRectangle((0, 0, 0, 0), wShape)
-
-        ch_in  = cls.get_ch_im_in(ctxt, dyFull, dxFull, wShape)
         ch_out = cls.get_ch_im_out(ctxt, dyFull, dxFull, wShape)
 
         for idx, dxCube in enumerate(dxTiles):
@@ -370,12 +371,22 @@ class ConvGradXTileConstraintBase(TileConstraint):
                 dxAbsOff=abs_off
             )
 
+            # Per-tile W cube: slice C_in (dim 1) to match the dx channel range.
+            # For regular conv the geometrical constraint ties dxName[1] == wName[1],
+            # so dxCube.offset[1]/dims[1] line up with the W slice we need.
+            # For DW or PW this degenerates to a full cube when the tiler didn't
+            # split the axis (wShape[1] either 1 for DW or already == Cin full).
+            wCube = HyperRectangle(
+                (0, dxCube.offset[1], 0, 0),
+                (wShape[0], dxCube.dims[1], wShape[2], wShape[3]),
+            )
+
             replacements["dim_im_in_x"].append(dxCube.dims[2])    # H_in_tile
             replacements["dim_im_in_y"].append(dxCube.dims[3])    # W_in_tile
             replacements["dim_im_out_x"].append(dyCube.dims[2])   # H_out_tile (halo)
             replacements["dim_im_out_y"].append(dyCube.dims[3])   # W_out_tile (halo)
 
-            replacements["ch_im_in"].append(ch_in)
+            replacements["ch_im_in"].append(dxCube.dims[1])
             replacements["ch_im_out"].append(ch_out)
 
             py_top, py_bottom, px_left, px_right = cls.map_onnx_pads_to_template(tpt, tpb, tpl, tpr)
@@ -390,7 +401,7 @@ class ConvGradXTileConstraintBase(TileConstraint):
             replacements["offset_grad_out_w"].append(dyCube.offset[3])
 
             inputDyCubes.append(dyCube)
-            inputWCubes.append(fullW)
+            inputWCubes.append(wCube)
             outputDxCubes.append(dxCube)
 
         if weight_in_solution:
