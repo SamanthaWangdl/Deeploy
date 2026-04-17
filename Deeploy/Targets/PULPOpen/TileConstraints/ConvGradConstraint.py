@@ -817,18 +817,27 @@ class ConvGradWTileConstraintBase(TileConstraint):
         except Exception:
             Cout_tile_max = Cout_full
 
-        co_tiles: List[Tuple[int, int]] = []
-        co = 0
-        while co < Cout_full:
-            cs = min(Cout_tile_max, Cout_full - co)
-            co_tiles.append((co, cs))
-            co += cs
+        # Plan A: derive C_out slices from the cubes provided by wrapTilingSolution
+        # (each cube at L1 level represents one L3 Cout slab for this call). Iterating
+        # a global co_tiles inside a per-cube schedule double-counts the Cout dim and
+        # blows up per-schedule length, mismatching outer/inner numTiles downstream.
+        co_slices: List[Tuple[int, int]] = []
+        for cube in absoluteOutputCubes:
+            coOff = cube.absoluteOffset[0]
+            coSz = cube.rectangle.dims[0]
+            co_slices.append((coOff, coSz))
+        if not co_slices:
+            co = 0
+            while co < Cout_full:
+                cs = min(Cout_tile_max, Cout_full - co)
+                co_slices.append((co, cs))
+                co += cs
 
         inputLoadSchedule = []
         outputLoadSchedule = []
 
-        # Build tiles: outer loop over C_out, inner over spatial
-        for coOff, coSz in co_tiles:
+        # Build tiles: outer loop over C_out slabs (from cubes), inner over spatial
+        for coOff, coSz in co_slices:
             dwTile = HyperRectangle(
                 (coOff, 0, 0, 0),
                 (coSz, dwShape[1], dwShape[2], dwShape[3]),

@@ -78,9 +78,22 @@ class TilingHoistingMixIn:
                                tilingSchedules: List[TilingSchedule]) -> Tuple[ConstantBuffer, VariableBuffer]:
         stepsNumTiles = [len(tilingSchedule.outputLoadSchedule) for tilingSchedule in tilingSchedules]
 
-        cumulativeNumTiles = [0]
-        for numTiles in stepsNumTiles:
-            cumulativeNumTiles.append(cumulativeNumTiles[-1] + numTiles)
+        # Core extension: at the innermost memory level (L1), emit a per-tile
+        # boundary so each invocation of the inner closure processes exactly one
+        # tile. The outer-level (L3→L2) closure iterates N_outer times and calls
+        # inner once per iter; with the baseline cumulative layout
+        # `{0, N1, N1+N2, ...}` inner would process many tiles per call and only
+        # tolerate `len(tilingSchedules)` outer iters before reading numTiles
+        # OOB. Per-tile layout `{0,1,2,...,total}` keeps
+        # outer_iters == inner_calls == total_tiles. Outer memory levels keep
+        # cumulative layout to iterate per L2 tile.
+        if self.memory == "L1":
+            total = sum(stepsNumTiles)
+            cumulativeNumTiles = list(range(total + 1))
+        else:
+            cumulativeNumTiles = [0]
+            for numTiles in stepsNumTiles:
+                cumulativeNumTiles.append(cumulativeNumTiles[-1] + numTiles)
 
         tileNum = self._hoistValues(ctxt, "numTiles", cumulativeNumTiles)
 
