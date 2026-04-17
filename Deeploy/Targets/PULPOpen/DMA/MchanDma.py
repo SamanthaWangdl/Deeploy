@@ -31,6 +31,13 @@ class MchanDma(AsyncDma):
         1: NodeTemplate("mchan_transfer_1d(${cmd}, ${loc}, ${ext});"),
         2: NodeTemplate("mchan_transfer_2d_ext_strided(${cmd}, ${loc}, ${ext}, ${size_1d}, ${stride_2d});"),
     }
+
+    # Chunked-1D fallback template. `loc` and `ext` are raw buffer identifiers
+    # (so the dynamic-reference extractor in Closure.extractDynamicReferences
+    # can pick them up and propagate them through closure args). Byte offsets
+    # are passed separately and applied in the C expression.
+    _chunkedTransferTemplate = NodeTemplate(
+        "mchan_transfer_1d(${cmd}, ((char*)${loc} + ${loc_offset}), ((char*)${ext} + ${ext_offset}));")
     _waitingStrategy = DirectionWaitingStrategy(MchanChannelFuture, "channel")
 
     def __init__(self, transferTemplates: Dict[int, NodeTemplate] = _transferTemplates) -> None:
@@ -90,25 +97,22 @@ class MchanDma(AsyncDma):
             mchanFlags += (1 << 0) if direction == "ExternalToLocal" else 0
             mchanFlags += (1 << 1)  # increment addresses
             mchanFlags += (1 << 3)  # event enable
-            template = self._transferTemplates[1]
-            # Use the network-prefixed buffer name so the emitted C references
-            # the variable that was actually declared (e.g.
-            # DeeployNetwork_TILING_CODEGEN_L1_foo_ref) rather than the raw
-            # buffer.name.  The mangling normally happens inside
-            # ExecutionBlock._mangleOpRepr, but that pass only rewrites values
-            # that match is_buffer() — a formatted string like
-            # "((char*)foo + 0)" escapes the rewrite and produces undeclared
-            # identifier build errors for any weight/tile >131072 bytes.
-            locName = ctxt._mangle(localBuffer.name)
-            extName = ctxt._mangle(externalBuffer.name)
+            template = self._chunkedTransferTemplate
+            # Pass raw buffer names in `loc`/`ext` so extractDynamicReferences in
+            # Closure codegen can see them and propagate them into closure-arg
+            # structs. The byte offsets are separate opRepr fields and are applied
+            # in the template, not embedded as a string literal (which would hide
+            # the identifier from both the mangler and the reference extractor).
             chunks: List[CodeSnippet] = []
             offset = 0
             while offset < totalSize:
                 chunkSize = min(self._MAX_1D_TRANSFER_BYTES, totalSize - offset)
                 cmd = (mchanFlags << 17) + chunkSize
                 opRepr: OperatorRepresentation = {
-                    "loc": f"((char*){locName} + {offset})",
-                    "ext": f"((char*){extName} + {offset})",
+                    "loc": localBuffer.name,
+                    "ext": externalBuffer.name,
+                    "loc_offset": offset,
+                    "ext_offset": offset,
                     "future": future.name,
                     "cmd": cmd,
                 }
