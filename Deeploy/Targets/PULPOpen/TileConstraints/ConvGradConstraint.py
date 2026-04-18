@@ -269,6 +269,16 @@ class ConvGradXTileConstraintBase(TileConstraint):
         """Hook for DW checks etc."""
         return
 
+    @classmethod
+    def _make_weight_cube(cls, dxCube: HyperRectangle,
+                          wShape: Tuple[int, int, int, int]) -> HyperRectangle:
+        """Per-tile weight cube. Regular conv: W layout [Cout, Cin/group, P, Q],
+        so the Cin slice tracks dxCube.dims[1]. Subclasses override for DW."""
+        return HyperRectangle(
+            (0, dxCube.offset[1], 0, 0),
+            (wShape[0], dxCube.dims[1], wShape[2], wShape[3]),
+        )
+
     # ---------------------------------------------------
     # 4) serialize: dx tiles -> dy halo tiles
     # ---------------------------------------------------
@@ -371,15 +381,9 @@ class ConvGradXTileConstraintBase(TileConstraint):
                 dxAbsOff=abs_off
             )
 
-            # Per-tile W cube: slice C_in (dim 1) to match the dx channel range.
-            # For regular conv the geometrical constraint ties dxName[1] == wName[1],
-            # so dxCube.offset[1]/dims[1] line up with the W slice we need.
-            # For DW or PW this degenerates to a full cube when the tiler didn't
-            # split the axis (wShape[1] either 1 for DW or already == Cin full).
-            wCube = HyperRectangle(
-                (0, dxCube.offset[1], 0, 0),
-                (wShape[0], dxCube.dims[1], wShape[2], wShape[3]),
-            )
+            # Per-tile W cube: layout differs between regular and DW conv,
+            # so delegate to the subclass-overridable helper.
+            wCube = cls._make_weight_cube(dxCube, wShape)
 
             replacements["dim_im_in_x"].append(dxCube.dims[2])    # H_in_tile
             replacements["dim_im_in_y"].append(dxCube.dims[3])    # W_in_tile
@@ -525,6 +529,17 @@ class DWConvGradX2DTileConstraint(ConvGradXTileConstraintBase):
     ) -> int:
         # DW: dY channels is C
         return dyFull[1]
+
+    @classmethod
+    def _make_weight_cube(cls, dxCube: HyperRectangle,
+                          wShape: Tuple[int, int, int, int]) -> HyperRectangle:
+        # DW weight layout [C, 1, P, Q]: the Cout axis (dim 0) tracks dxCube's
+        # channel axis, Cin is always 1. Returning the regular-conv cube here
+        # multiplies the weight transfer by Cin and blows past L1.
+        return HyperRectangle(
+            (dxCube.offset[1], 0, 0, 0),
+            (dxCube.dims[1], 1, wShape[2], wShape[3]),
+        )
 
 class ConvGradWTileConstraintBase(TileConstraint):
     """
