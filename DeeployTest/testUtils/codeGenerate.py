@@ -402,7 +402,12 @@ def generateTrainingTestInputsHeader(deployer: NetworkDeployer, all_mb_data: Lis
                 paddingElements = (pad_bytes * 8 + typeWidth - 1) // typeWidth
                 list_str += ", " + ", ".join("0" for _ in range(paddingElements))
 
-            retStr += f"{typeName} {buf_name}[] = {{{list_str}}};\n"
+            # Place bulky test arrays in WEIGHTMEM_SRAM (4MB on-chip, separate
+            # from L2 2MB region) so they don't inflate .l2_data and spill past
+            # the L2 linker region. These arrays are only read by the harness
+            # to initialise arenas and feed mini-batches; CPU can address them
+            # directly (WEIGHTMEM_SRAM @ 0x10800020).
+            retStr += f'{typeName} {buf_name}[] __attribute__((section(".weightmem_sram"))) = {{{list_str}}};\n'
 
         # Emit the row pointer array for this mini-batch
         row_name = f"testDataRow{mb}"
@@ -436,7 +441,9 @@ def generateTrainingTestInputsHeader(deployer: NetworkDeployer, all_mb_data: Lis
             list_str = ", ".join([f'{float(x)}f' for x in values])
             buf_name = f"testInitWeight_{wi}"
             weight_entries.append(buf_name)
-            retStr += f"{typeName} {buf_name}[] = {{{list_str}}};\n"
+            # Same rationale as testData_mb*_buf*: keep large constant weight
+            # arrays out of L2 by placing them in the on-chip WEIGHTMEM_SRAM.
+            retStr += f'{typeName} {buf_name}[] __attribute__((section(".weightmem_sram"))) = {{{list_str}}};\n'
         retStr += f"void* testInitWeights[{len(weight_entries)}] = {{{', '.join(f'(void*){e}' for e in weight_entries)}}};\n"
 
     return retStr
