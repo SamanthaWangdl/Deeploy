@@ -57,7 +57,15 @@ class MchanDma(AsyncDma):
             assert strideLoc[0] == shape[1] and strideLoc[
                 1] == 1, "Mchan supports only contigous transfers for local memory"
 
-    _MAX_1D_TRANSFER_BYTES = 1 << 17  # 131072 bytes: max representable in 17-bit mchan cmd size field
+    # 17-bit mchan cmd size field can hold values 0..(2^17 - 1) = 131071.
+    # Using 1<<17 = 131072 as the per-chunk max causes chunkSize to carry into
+    # bit 17 of cmd, clobbering the direction/INC/ELE flag bits encoded above
+    # it — producing a size-0 DMA whose completion is scheduled at current sim
+    # time, which in turn trips gvsoc's `ASSERT FAILED: Time must be higher
+    # than current time`. Seen on MobileNetV1 training; any ConvGrad* path
+    # that routes a tile through this chunked fallback with totalSize divisible
+    # by (1<<17) is affected.
+    _MAX_1D_TRANSFER_BYTES = (1 << 17) - 1  # 131071 bytes
 
     def transferOpRepr(self, externalBuffer: VariableBuffer, localBuffer: VariableBuffer, shape: Tuple[int, ...],
                        strideExt: Tuple[int, ...], strideLoc: Tuple[int, ...], direction: DmaDirection,
