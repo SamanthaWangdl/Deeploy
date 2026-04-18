@@ -402,12 +402,7 @@ def generateTrainingTestInputsHeader(deployer: NetworkDeployer, all_mb_data: Lis
                 paddingElements = (pad_bytes * 8 + typeWidth - 1) // typeWidth
                 list_str += ", " + ", ".join("0" for _ in range(paddingElements))
 
-            # Place bulky test arrays in WEIGHTMEM_SRAM (4MB on-chip, separate
-            # from L2 2MB region) so they don't inflate .l2_data and spill past
-            # the L2 linker region. These arrays are only read by the harness
-            # to initialise arenas and feed mini-batches; CPU can address them
-            # directly (WEIGHTMEM_SRAM @ 0x10800020).
-            retStr += f'{typeName} {buf_name}[] __attribute__((section(".weightmem_sram"))) = {{{list_str}}};\n'
+            retStr += f'{typeName} {buf_name}[] = {{{list_str}}};\n'
 
         # Emit the row pointer array for this mini-batch
         row_name = f"testDataRow{mb}"
