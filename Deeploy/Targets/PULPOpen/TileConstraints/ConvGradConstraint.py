@@ -904,8 +904,60 @@ class ConvGradW2DTileConstraint(ConvGradWTileConstraintBase):
     pass
 
 class PWConvGradWTileConstraint(ConvGradWTileConstraintBase):
-    """Pointwise ConvGradW (1x1 kernel)."""
-    pass
+    """Pointwise (1x1) ConvGradW — weight gradient tile constraint.
+
+    Forbids H/W tiling on dY and X. Rationale:
+
+      For PW conv (kernel 1x1), dW[Cout, Cin, 1, 1] = sum_{n,h,w} dY[n,co,h,w] *
+      X[n,ci,h,w]. Splitting the (n, h, w) reduction axis across tiles would
+      require each tile to *accumulate* its partial into dW (rather than
+      overwrite).
+
+      Two things together prevent that here:
+        1. referencePWConvGradW2DTemplate in Templates/FloatConvGradTemplate.py
+           emits an unguarded `memset(dW, 0, Cout*Cin*sizeof(float))` at the top
+           of the per-tile closure body. (The template has a first-tile guard
+           keyed on ${tileIdxPtr}, but that sentinel never gets populated with
+           a real buffer name by the time the template renders — so the `%else`
+           branch always fires. A proper fix of that plumbing would obsolete
+           this workaround.)
+        2. The PW wrapper delegates to pulp-trainlib's
+           `pulp_conv_pw_fp32_bw_param_grads_cl`, which uses `mm_add`
+           (accumulating GEMM).
+
+      (1) + (2) means: every H/W tile zeros the full dW then mm_add's its own
+      HW partial — final dW only contains the last tile's partial. 100% wrong
+      output. See debug history / memory for the investigation trail.
+
+    Restricting the tiler to tile only along C_out makes each tile write a
+    *disjoint* C_out slice of dW: the memset wipes only that slice (same
+    destination the kernel fills), no accumulation across tiles is needed, and
+    the existing template is trivially correct. The regular (non-PW)
+    ConvGradW path is already constrained this way in practice and passes
+    bit-exact on ResNet8.
+
+    Other PW tile dims (C_out, N) stay free per the base policy; the base
+    policy also keeps C_in full.
+    """
+
+    @classmethod
+    def addPolicyConstraint(cls, tilerModel: TilerModel, parseDict: Dict, ctxt: NetworkContext) -> TilerModel:
+        super().addPolicyConstraint(tilerModel, parseDict, ctxt)
+
+        xName  = parseDict[cls.dataInKey]
+        dyName = parseDict[cls.gradOutKey]
+
+        xBuf  = ctxt.lookup(xName)
+        dyBuf = ctxt.lookup(dyName)
+
+        # Full H/W on dY (reduction axis — splitting would need accumulation)
+        tilerModel.addConstraint(tilerModel.getTensorDimVar(dyName, 2) == dyBuf.shape[2])
+        tilerModel.addConstraint(tilerModel.getTensorDimVar(dyName, 3) == dyBuf.shape[3])
+        # Full H/W on X (same reason; PW has 1x1 kernel so X H/W == dY H/W)
+        tilerModel.addConstraint(tilerModel.getTensorDimVar(xName, 2) == xBuf.shape[2])
+        tilerModel.addConstraint(tilerModel.getTensorDimVar(xName, 3) == xBuf.shape[3])
+
+        return tilerModel
 
 class ConvGradBTileConstraint(TileConstraint):
     """
