@@ -234,7 +234,10 @@ void PULP_BNGradNormalize_fp32(const float32_t *dY, const float32_t *X,
     float32_t g = gamma[c];
     float32_t dg = dgamma[c];
     float32_t db = dbeta[c];
-    float32_t scale = inv_std * N_total_inv;
+    /* scale = gamma * inv_std / N_total; gamma applies to all three terms of
+       the canonical BN backward formula
+         dX = (g * inv_std / N) * (N*dY - dbeta - x_hat * dgamma) */
+    float32_t scale = g * inv_std * N_total_inv;
 
     for (uint32_t n = 0; n < N; n++) {
       const float32_t *x_nc = X + (n * C + c) * N_hw;
@@ -242,8 +245,7 @@ void PULP_BNGradNormalize_fp32(const float32_t *dY, const float32_t *X,
       float32_t *dx_nc = dX + (n * C + c) * N_hw;
       for (uint32_t hw = 0; hw < N_hw; hw++) {
         float32_t x_hat = (x_nc[hw] - mean) * inv_std;
-        float32_t dx_hat = dy_nc[hw] * g;
-        dx_nc[hw] = scale * (N_total_f * dx_hat - db - x_hat * dg);
+        dx_nc[hw] = scale * (N_total_f * dy_nc[hw] - db - x_hat * dg);
       }
     }
   }
@@ -288,7 +290,9 @@ void PULP_BatchNormGrad_fp32(const float32_t *dY, const float32_t *X,
     dbeta[c] = sum_dbeta;
 
     /* ── Second pass: compute dX ─────────────────────────────────────────── */
-    float32_t scale = inv_std * inv_N;
+    /* scale = gamma * inv_std / N_total; gamma applies to all three terms:
+         dX = (g * inv_std / N) * (N*dY - dbeta - x_hat * dgamma) */
+    float32_t scale = g * inv_std * inv_N;
 
     for (uint32_t n = 0; n < N; n++) {
       const float32_t *x_nc = X + (n * C + c) * N_hw;
@@ -296,8 +300,7 @@ void PULP_BatchNormGrad_fp32(const float32_t *dY, const float32_t *X,
       float32_t *dx_nc = dX + (n * C + c) * N_hw;
       for (uint32_t hw = 0; hw < N_hw; hw++) {
         float32_t x_hat = (x_nc[hw] - mean) * inv_std;
-        float32_t dx_hat = dy_nc[hw] * g;
-        dx_nc[hw] = scale * ((float32_t)N_total * dx_hat - sum_dbeta - x_hat * sum_dgamma);
+        dx_nc[hw] = scale * ((float32_t)N_total * dy_nc[hw] - sum_dbeta - x_hat * sum_dgamma);
       }
     }
   }
