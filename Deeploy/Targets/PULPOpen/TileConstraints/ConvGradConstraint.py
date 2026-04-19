@@ -393,11 +393,23 @@ class ConvGradXTileConstraintBase(TileConstraint):
             replacements["ch_im_in"].append(dxCube.dims[1])
             replacements["ch_im_out"].append(ch_out)
 
-            py_top, py_bottom, px_left, px_right = cls.map_onnx_pads_to_template(tpt, tpb, tpl, tpr)
-            replacements["padding_y_top"].append(py_top)
-            replacements["padding_y_bottom"].append(py_bottom)
-            replacements["padding_x_left"].append(px_left)
-            replacements["padding_x_right"].append(px_right)
+            # ConvGradX kernels compute `base = ox*sw - pad_left` (abs coord)
+            # to find the dX cell each dY pixel scatters into; this needs the
+            # *original* (global) ONNX pad, NOT the tile-boundary-adjusted
+            # pad. Using the tile-adjusted pad for a non-boundary tile makes
+            # `base` off by the full-op pad amount → off-by-N shift in the
+            # written dX columns (visible as dX values rotated by one for
+            # DW stride=2 pad=1 when HW is tiled; see ConvGradX_DW_block_1_s2).
+            # The per-tile adjustment is still passed via kx/ky pruning (the
+            # kernel bounds-checks each written cell against the tile extents
+            # hx0/hx1/wx0/wx1) so non-boundary tiles correctly drop kernel
+            # positions that would land outside their own region.
+            _py_top, _py_bottom, _px_left, _px_right = cls.map_onnx_pads_to_template(
+                pads[0], pads[1], pads[2], pads[3])
+            replacements["padding_y_top"].append(_py_top)
+            replacements["padding_y_bottom"].append(_py_bottom)
+            replacements["padding_x_left"].append(_px_left)
+            replacements["padding_x_right"].append(_px_right)
 
             replacements["offset_grad_in_h"].append(abs_off[2])
             replacements["offset_grad_in_w"].append(abs_off[3])
@@ -904,40 +916,17 @@ class ConvGradW2DTileConstraint(ConvGradWTileConstraintBase):
     pass
 
 class PWConvGradWTileConstraint(ConvGradWTileConstraintBase):
-    """Pointwise (1x1) ConvGradW — weight gradient tile constraint.
+    """Pointwise (1x1) ConvGradW — forbid H/W tiling.
 
-    Forbids H/W tiling on dY and X. Rationale:
-
-      For PW conv (kernel 1x1), dW[Cout, Cin, 1, 1] = sum_{n,h,w} dY[n,co,h,w] *
-      X[n,ci,h,w]. Splitting the (n, h, w) reduction axis across tiles would
-      require each tile to *accumulate* its partial into dW (rather than
-      overwrite).
-
-      Two things together prevent that here:
-        1. referencePWConvGradW2DTemplate in Templates/FloatConvGradTemplate.py
-           emits an unguarded `memset(dW, 0, Cout*Cin*sizeof(float))` at the top
-           of the per-tile closure body. (The template has a first-tile guard
-           keyed on ${tileIdxPtr}, but that sentinel never gets populated with
-           a real buffer name by the time the template renders — so the `%else`
-           branch always fires. A proper fix of that plumbing would obsolete
-           this workaround.)
-        2. The PW wrapper delegates to pulp-trainlib's
-           `pulp_conv_pw_fp32_bw_param_grads_cl`, which uses `mm_add`
-           (accumulating GEMM).
-
-      (1) + (2) means: every H/W tile zeros the full dW then mm_add's its own
-      HW partial — final dW only contains the last tile's partial. 100% wrong
-      output. See debug history / memory for the investigation trail.
-
-    Restricting the tiler to tile only along C_out makes each tile write a
-    *disjoint* C_out slice of dW: the memset wipes only that slice (same
-    destination the kernel fills), no accumulation across tiles is needed, and
-    the existing template is trivially correct. The regular (non-PW)
-    ConvGradW path is already constrained this way in practice and passes
-    bit-exact on ResNet8.
-
-    Other PW tile dims (C_out, N) stay free per the base policy; the base
-    policy also keeps C_in full.
+    Ideal would be: let the tiler freely pick H/W or C_out (conditional
+    template picks memset strategy). That works for simple shapes where the
+    tiler commits to ONE axis, but breaks on shapes like MobileNet block_11
+    PW (C=128→256, HW=3×3): dW is 128 KB (= full L1), so the tiler is forced
+    to mix C_out + HW tiling simultaneously. In that mixed case neither
+    memset strategy (per-tile or first-tile-only) is correct without extra
+    per-C_out-slice transition tracking. Until the codegen supports that,
+    restricting PW to C_out-only keeps the template's per-tile memset
+    correct (tiles write disjoint dW slices).
     """
 
     @classmethod
@@ -950,10 +939,8 @@ class PWConvGradWTileConstraint(ConvGradWTileConstraintBase):
         xBuf  = ctxt.lookup(xName)
         dyBuf = ctxt.lookup(dyName)
 
-        # Full H/W on dY (reduction axis — splitting would need accumulation)
         tilerModel.addConstraint(tilerModel.getTensorDimVar(dyName, 2) == dyBuf.shape[2])
         tilerModel.addConstraint(tilerModel.getTensorDimVar(dyName, 3) == dyBuf.shape[3])
-        # Full H/W on X (same reason; PW has 1x1 kernel so X H/W == dY H/W)
         tilerModel.addConstraint(tilerModel.getTensorDimVar(xName, 2) == xBuf.shape[2])
         tilerModel.addConstraint(tilerModel.getTensorDimVar(xName, 3) == xBuf.shape[3])
 
@@ -1079,7 +1066,17 @@ class DWConvGradW2DTileConstraint(ConvGradWTileConstraintBase):
 
     @classmethod
     def addPolicyConstraint(cls, tilerModel: TilerModel, parseDict: Dict, ctxt: NetworkContext) -> TilerModel:
-        # Reuse base policy but also enforce DW-specific invariants tightly
+        """DW ConvGradW policy.
+
+        Allows the tiler to pick **C tiling** (preferred when dW is large —
+        C slices are disjoint so per-tile memset is trivially correct) OR
+        H/W tiling (preferred when dY/X spatial is the L1 bottleneck — the
+        conditional template's first-tile-only memset keeps the mm_add
+        accumulation across HW tiles correct). DW invariants (Cin==Cout==C,
+        dW[1]==1, kernel dims full) are still enforced; C on X/dY is tied
+        to C on dW so all three slice together when the tiler picks C
+        tiling.
+        """
         xName = parseDict[cls.dataInKey]
         dyName = parseDict[cls.gradOutKey]
         dwName = parseDict[cls.weightKey]
@@ -1088,18 +1085,17 @@ class DWConvGradW2DTileConstraint(ConvGradWTileConstraintBase):
         dyBuf = ctxt.lookup(dyName)
         dwBuf = ctxt.lookup(dwName)
 
-        # full channels
-        tilerModel.addConstraint(tilerModel.getTensorDimVar(xName, 1) == xBuf.shape[1])
-        tilerModel.addConstraint(tilerModel.getTensorDimVar(dyName, 1) == dyBuf.shape[1])
-
-        # DW invariants: Cin == Cout == dwBuf.shape[0], dwBuf.shape[1] == 1
-        tilerModel.addConstraint(tilerModel.getTensorDimVar(dwName, 0) == xBuf.shape[1])
-        tilerModel.addConstraint(tilerModel.getTensorDimVar(dwName, 0) == dyBuf.shape[1])
+        # DW invariants
+        # Cin on X == Cout on dY == C on dW (ties channel slicing across
+        # all three tensors; the geometrical constraint already enforces
+        # this, repeat here as a belt-and-suspenders for the policy solver)
+        tilerModel.addConstraint(tilerModel.getTensorDimVar(xName, 1) == tilerModel.getTensorDimVar(dwName, 0))
+        tilerModel.addConstraint(tilerModel.getTensorDimVar(dyName, 1) == tilerModel.getTensorDimVar(dwName, 0))
+        # dW[1] must stay 1 (DW weight layout is [C, 1, P, Q])
         tilerModel.addConstraint(tilerModel.getTensorDimVar(dwName, 1) == 1)
-
-        # dW full (no tiling)
-        for d in range(len(dwBuf.shape)):
-            tilerModel.addConstraint(tilerModel.getTensorDimVar(dwName, d) == dwBuf.shape[d])
+        # Kernel dims full
+        tilerModel.addConstraint(tilerModel.getTensorDimVar(dwName, 2) == dwBuf.shape[2])
+        tilerModel.addConstraint(tilerModel.getTensorDimVar(dwName, 3) == dwBuf.shape[3])
 
         # dY tile spatial dims >= 1
         tilerModel.addConstraint(tilerModel.getTensorDimVar(dyName, 2) >= 1)

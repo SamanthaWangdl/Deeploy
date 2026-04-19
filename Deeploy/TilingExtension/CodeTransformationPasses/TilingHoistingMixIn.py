@@ -97,7 +97,19 @@ class TilingHoistingMixIn:
 
         tileNum = self._hoistValues(ctxt, "numTiles", cumulativeNumTiles)
 
-        tileIdxPtr = ctxt.VariableBuffer(f"{self.prefix}tileIdxPtr", shape = [1])
+        tileIdxPtrName = f"{self.prefix}tileIdxPtr"
+        # Idempotent: reuse if pre-hoisted by a template's alignToContext
+        # (see _ConvGradWTemplate). That lets template rendering — which
+        # Closure passes trigger BEFORE this tiling pass runs — already see
+        # the real tileIdxPtr buffer name instead of a 'NULL' sentinel.
+        # Keep whatever type the pre-hoister chose so the earlier captured
+        # closure-struct field types stay consistent with the later outer-
+        # scope initTemplate declaration.
+        if ctxt.is_buffer(tileIdxPtrName):
+            tileIdxPtr = ctxt.lookup(tileIdxPtrName)
+            return (tileNum, tileIdxPtr)
+
+        tileIdxPtr = ctxt.VariableBuffer(tileIdxPtrName, shape = [1])
         ctxt.add(tileIdxPtr, "local")
 
         tileIdxPtr._type = tileNum._type
