@@ -362,9 +362,97 @@ def build_pw_gradw_tiny(out_dir: Path) -> None:
     print(f"[{out_dir.name}] dY{dY.shape}  X{X.shape}  dW{dW.shape}  PW-tiny")
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Parameterized builders (support arbitrary shape + stride, for MobileNet &
+# ResNet8 layer-accurate sweeps)
+# ─────────────────────────────────────────────────────────────────────────────
+def build_gradx_generic(out_dir: Path, Ci: int, Co: int, Hi: int, Wi: int,
+                         Ho: int, Wo: int, P: int, Q: int,
+                         stride: int, pad: int, group: int, tag: str = "") -> None:
+    dY = np.random.randn(1, Co, Ho, Wo).astype(np.float32)
+    W  = np.random.randn(Co, Ci // group, P, Q).astype(np.float32)
+    dX = torch.nn.grad.conv2d_input(
+        input_size=(1, Ci, Hi, Wi),
+        weight=torch.from_numpy(W),
+        grad_output=torch.from_numpy(dY),
+        stride=stride, padding=pad, dilation=1, groups=group,
+    ).numpy().astype(np.float32)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    with open(out_dir / "network.onnx", "wb") as f:
+        f.write(_make_conv_grad_x_onnx(
+            dY.shape, W.shape, dX.shape,
+            kernel=[P, Q], strides=[stride, stride],
+            pads=_pads_onnx_ordered(pad), group=group,
+        ))
+    np.savez(out_dir / "inputs.npz",  **{"output_grad": dY, "weight": W})
+    np.savez(out_dir / "outputs.npz", **{"input_grad": dX})
+    print(f"[{out_dir.name}] dY{dY.shape}  W{W.shape}  dX{dX.shape}  {tag}")
+
+
+def build_gradw_generic(out_dir: Path, Ci: int, Co: int, Hi: int, Wi: int,
+                         Ho: int, Wo: int, P: int, Q: int,
+                         stride: int, pad: int, group: int, tag: str = "") -> None:
+    dY = np.random.randn(1, Co, Ho, Wo).astype(np.float32)
+    X  = np.random.randn(1, Ci, Hi, Wi).astype(np.float32)
+    dW = torch.nn.grad.conv2d_weight(
+        input=torch.from_numpy(X),
+        weight_size=(Co, Ci // group, P, Q),
+        grad_output=torch.from_numpy(dY),
+        stride=stride, padding=pad, dilation=1, groups=group,
+    ).numpy().astype(np.float32)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    with open(out_dir / "network.onnx", "wb") as f:
+        f.write(_make_conv_grad_w_onnx(
+            dY.shape, X.shape, dW.shape,
+            kernel=[P, Q], strides=[stride, stride],
+            pads=_pads_onnx_ordered(pad), group=group,
+        ))
+    np.savez(out_dir / "inputs.npz",  **{"output_grad": dY, "input_data": X})
+    np.savez(out_dir / "outputs.npz", **{"weight_grad": dW})
+    print(f"[{out_dir.name}] dY{dY.shape}  X{X.shape}  dW{dW.shape}  {tag}")
+
+
+# MobileNetV1 0.25x + ResNet8 real backward-op shapes.
+# Format: (name, op, Ci, Co, Hi, Wi, Ho, Wo, P, Q, stride, pad, group)
+MOBILENET_SHAPES = [
+    # Stem: regular 3x3 stride-2 conv 3→8, HW 96→48 (input is leaf; GradX not needed)
+    ("Stem",          "W",   3,   8,  96,  96,  48, 48, 3, 3, 2, 1,   1),
+    # block_0 DW stride-1 (C=8 HW=48)
+    ("DW_block_0",    "X",   8,   8,  48,  48,  48, 48, 3, 3, 1, 1,   8),
+    ("DW_block_0",    "W",   8,   8,  48,  48,  48, 48, 3, 3, 1, 1,   8),
+    # block_0 PW 8→16 HW=48 (biggest PW shape in MobileNet — most stressful for L1)
+    ("PW_block_0",    "X",   8,  16,  48,  48,  48, 48, 1, 1, 1, 0,   1),
+    ("PW_block_0",    "W",   8,  16,  48,  48,  48, 48, 1, 1, 1, 0,   1),
+    # block_1 DW stride-2 (C=16 HW 48→24)
+    ("DW_block_1_s2", "X",  16,  16,  48,  48,  24, 24, 3, 3, 2, 1,  16),
+    ("DW_block_1_s2", "W",  16,  16,  48,  48,  24, 24, 3, 3, 2, 1,  16),
+    # block_7 DW stride-2 (C=128 HW 12→6 per user spec)
+    ("DW_block_7_s2", "X", 128, 128,  12,  12,   6,  6, 3, 3, 2, 1, 128),
+    ("DW_block_7_s2", "W", 128, 128,  12,  12,   6,  6, 3, 3, 2, 1, 128),
+    # block_11 PW 128→256 HW=3 (largest-channel, tiniest-HW case)
+    ("PW_block_11",   "X", 128, 256,   3,   3,   3,  3, 1, 1, 1, 0,   1),
+    ("PW_block_11",   "W", 128, 256,   3,   3,   3,  3, 1, 1, 1, 0,   1),
+    # --- additional stride-2 DW coverage (user ask) ---
+    # block_3 DW stride-2 (C=32 HW 24→12) — mid-depth, moderate HW
+    ("DW_block_3_s2", "X",  32,  32,  24,  24,  12, 12, 3, 3, 2, 1,  32),
+    ("DW_block_3_s2", "W",  32,  32,  24,  24,  12, 12, 3, 3, 2, 1,  32),
+    # block_11 DW stride-2 (C=128 HW 6→3) — tiny HW, big C
+    ("DW_block_11_s2","X", 128, 128,   6,   6,   3,  3, 3, 3, 2, 1, 128),
+    ("DW_block_11_s2","W", 128, 128,   6,   6,   3,  3, 3, 3, 2, 1, 128),
+]
+
+# ResNet8 audit: regular 3x3 ConvGradW at layer3 conv2, the big-W layer where
+# my tile-policy audit flagged a possible memset+mm_add risk under H/W tiling.
+RESNET_SHAPES = [
+    ("R8_L3_conv2",   "W",  64,  64,   8,   8,   8,  8, 3, 3, 1, 1,   1),
+    ("R8_L3_conv2",   "X",  64,  64,   8,   8,   8,  8, 3, 3, 1, 1,   1),
+]
+
+
 def main() -> None:
     np.random.seed(42)
     base = Path(__file__).resolve().parent.parent / "DeeployTest" / "Tests" / "Kernels" / "FP32"
+    # Original small-shape suite (investigation baseline)
     build_dw_gradx(base / "ConvGradX_DW")
     build_dw_gradw(base / "ConvGradW_DW")
     build_pw_gradx(base / "ConvGradX_PW")
@@ -375,6 +463,16 @@ def main() -> None:
     build_pw_gradw_tiny(base / "ConvGradW_PW_tiny")
     build_pw_gradx_asym_notile(base / "ConvGradX_PW_asym_small")
     build_pw_gradw_asym_notile(base / "ConvGradW_PW_asym_small")
+    # MobileNet layer-accurate sweep
+    for name, op, Ci, Co, Hi, Wi, Ho, Wo, P, Q, s, pad, g in MOBILENET_SHAPES:
+        out = base / f"ConvGrad{op}_{name}"
+        builder = build_gradx_generic if op == "X" else build_gradw_generic
+        builder(out, Ci, Co, Hi, Wi, Ho, Wo, P, Q, s, pad, g, tag="mobilenet")
+    # ResNet8 audit
+    for name, op, Ci, Co, Hi, Wi, Ho, Wo, P, Q, s, pad, g in RESNET_SHAPES:
+        out = base / f"ConvGrad{op}_{name}"
+        builder = build_gradx_generic if op == "X" else build_gradw_generic
+        builder(out, Ci, Co, Hi, Wi, Ho, Wo, P, Q, s, pad, g, tag="resnet8-audit")
 
 
 if __name__ == "__main__":
