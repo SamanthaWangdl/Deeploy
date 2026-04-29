@@ -436,9 +436,12 @@ def generateTrainingTestInputsHeader(deployer: NetworkDeployer, all_mb_data: Lis
             list_str = ", ".join([f'{float(x)}f' for x in values])
             buf_name = f"testInitWeight_{wi}"
             weight_entries.append(buf_name)
-            # Same rationale as testData_mb*_buf*: keep large constant weight
-            # arrays out of L2 by placing them in the on-chip WEIGHTMEM_SRAM.
-            retStr += f'{typeName} {buf_name}[] __attribute__((section(".weightmem_sram"))) = {{{list_str}}};\n'
+            # Default linker section (`.l2_data`); WEIGHTMEM_SRAM is no longer
+            # used for the test harness — see commit a9b0242 (testData_mb*) and
+            # this follow-up that drops the attribute from the testInitWeight_*
+            # arrays as well, per the explicit instruction to not place anything
+            # in WEIGHTMEM_SRAM.
+            retStr += f'{typeName} {buf_name}[] = {{{list_str}}};\n'
         retStr += f"void* testInitWeights[{len(weight_entries)}] = {{{', '.join(f'(void*){e}' for e in weight_entries)}}};\n"
 
     return retStr
