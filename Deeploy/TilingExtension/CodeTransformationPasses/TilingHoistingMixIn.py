@@ -80,14 +80,21 @@ class TilingHoistingMixIn:
 
         # Core extension: at the innermost memory level (L1), emit a per-tile
         # boundary so each invocation of the inner closure processes exactly one
-        # tile. The outer-level (L3→L2) closure iterates N_outer times and calls
-        # inner once per iter; with the baseline cumulative layout
+        # tile. The outer-level (L2 spatial) closure iterates N_outer times and
+        # calls inner once per iter; with the baseline cumulative layout
         # `{0, N1, N1+N2, ...}` inner would process many tiles per call and only
         # tolerate `len(tilingSchedules)` outer iters before reading numTiles
         # OOB. Per-tile layout `{0,1,2,...,total}` keeps
         # outer_iters == inner_calls == total_tiles. Outer memory levels keep
         # cumulative layout to iterate per L2 tile.
-        if self.memory == "L1":
+        #
+        # Detect whether an outer driver will call L1 multiple times:
+        # `len(tilingSchedules) > 1` means there are multiple L2 spatial steps,
+        # so an L2 outer loop drives L1 once per step → per-tile.
+        # When len == 1 (L1 is the single outermost tile loop, called once from
+        # RunNetwork / the L3 closure), emit cumulative {0, total} so the single
+        # call walks all tiles.
+        if self.memory == "L1" and len(tilingSchedules) > 1:
             total = sum(stepsNumTiles)
             cumulativeNumTiles = list(range(total + 1))
         else:
