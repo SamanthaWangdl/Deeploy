@@ -530,11 +530,19 @@ def _remove_only_singleton_reduce_mean(graph: gs.Graph, match: Match, name: str)
     if len(graph.nodes) == 1:
         return graph
 
-    # Delete node if only reduction over singleton dimensions
-    if 'axis' in node.attrs:
+    # Delete node if only reduction over singleton dimensions.
+    # Pre-opset-18 ReduceMean carries axes as an 'axes' attribute; opset 18+
+    # carries it as the second input. Some exporters also spell the attribute
+    # 'axis'. Handle all three.
+    if 'axes' in node.attrs:
+        axis = node.attrs['axes']
+    elif 'axis' in node.attrs:
         axis = node.attrs['axis']
-    else:
+    elif len(node.inputs) > 1:
         axis = node.inputs[1].values
+    else:
+        # No axes info → reduce over all dims; not a singleton-only case.
+        return graph
 
     # Check if shape information is available
     if node.inputs[0].shape is not None and all(node.inputs[0].shape[ax] == 1 for ax in axis):

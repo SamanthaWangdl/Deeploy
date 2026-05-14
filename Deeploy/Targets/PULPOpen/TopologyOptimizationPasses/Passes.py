@@ -175,7 +175,17 @@ def _merge_conv_rq_fun(graph: gs.Graph, match: Match, name: str):
 
     rqs.inputs[-1].values = copy.deepcopy(rqs.inputs[-1].values) + rounding
 
-    _inputs = list(conv.inputs) + list(rqs.inputs[1:])
+    # Absorb the Conv's bias (if present) into the RequantShift's add term:
+    #   (X*W + B) * mul + add  =  X*W * mul + (B * mul + add)
+    # This keeps the resulting RequantizedConv at the 4 inputs that
+    # PULPConv2DParser / PULPDWConv2DParser require (X, W, mul, merged_add).
+    if len(list(conv.inputs)) == 3:
+        B = conv.inputs[2].values
+        mul = rqs.inputs[1].values
+        rqs.inputs[2].values = np.round(B * mul).astype(rqs.inputs[2].values.dtype) + rqs.inputs[2].values
+        _inputs = list(conv.inputs[:2]) + list(rqs.inputs[1:])
+    else:
+        _inputs = list(conv.inputs) + list(rqs.inputs[1:])
 
     _outputs = rqs.outputs
 

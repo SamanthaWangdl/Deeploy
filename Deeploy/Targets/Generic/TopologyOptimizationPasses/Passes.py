@@ -1177,3 +1177,142 @@ class DequantPatternPass(ReplaceSequentialPatternPass):
 
         name = "_RECOGNIZE_DEQUANT_PASS"
         super().__init__(graph, _recognize_dequant_fun, name)
+
+
+# -------------------------------------------------------------------------- #
+# Dequant → Quant chain  →  RequantShift                                      #
+# -------------------------------------------------------------------------- #
+#
+# QCDQ-style ONNX from Brevitas/DeepQuant produces ``Dequant`` and ``Quant``
+# in alternating positions sandwiching float ops. After ``QuantPatternPass``
+# and ``DequantPatternPass`` fold them, the graph looks like:
+#
+#     Quant_input → Dequant → Conv(fp) → Quant → Dequant → Conv(fp) → ...
+#
+# Deeploy's per-op RequantMerge passes (PULPConvRequantMergePass etc.) look
+# for ``Op → RequantShift``, not ``Op → Quant → Dequant``. We bridge by
+# pre-folding every ``Dequant → Quant`` pair into a single ``RequantShift``,
+# which carries the combined affine transform:
+#
+#     y_int = clip(round((x_int - zp_d) * scale_d / scale_q + zp_q))
+#
+# With   mul = round(scale_d / scale_q * 2^N),   div = 2^N,
+#        add = zp_q * div - zp_d * mul.
+#
+def _dequant_quant_to_rqs_fun(graph: gs.Graph, match: Match, name: str):
+    matched_nodes = list(match.nodes_map.values())
+    dequant_node = matched_nodes[0]
+    quant_node = matched_nodes[1]
+
+    scale_d = float(dequant_node.attrs['scale'])
+    zp_d = float(dequant_node.attrs['zero_point'])
+    scale_q = float(quant_node.attrs['scale'])
+    zp_q = float(quant_node.attrs['zero_point'])
+    bit_width_q = int(quant_node.attrs['bit_width'])
+    signed_q = bool(quant_node.attrs.get('signed', True))
+
+    # Fixed-point representation of scale_d / scale_q. 16 bits after the binary
+    # point comfortably covers any per-tensor INT8 PTQ scale we have seen.
+    shift_bits = 16
+    div = int(1 << shift_bits)
+    mul_val = int(np.round((scale_d / scale_q) * div))
+    add_val = int(np.round(zp_q * div - zp_d * mul_val))
+
+    mul_tensor = gs.Constant(name = name + '_mul', values = np.array([mul_val], dtype = np.int32))
+    add_tensor = gs.Constant(name = name + '_add', values = np.array([add_val], dtype = np.int32))
+
+    n_levels = 1 << bit_width_q
+    # Attrs wrapped in gs.Constant since RequantShiftParser reads
+    # node.attrs['div'].values etc. (Parsers.py around line 90).
+    attrs = {
+        'n_levels': gs.Constant(name = name + '_n_levels', values = np.array(n_levels)),
+        'signed': gs.Constant(name = name + '_signed', values = np.array(int(signed_q))),
+        'div': gs.Constant(name = name + '_div', values = np.array(div)),
+    }
+
+    # `replaceInsertNode` only reads op/name/attrs off the supplied node — it
+    # creates the real node via graph.layer(...) with the inputs/outputs we
+    # pass here. So this gs.Node serves only as a spec carrier.
+    spec = gs.Node(op = 'RequantShift', name = name, attrs = attrs)
+    graph.replaceInsertNode(
+        [dequant_node.inputs[0], mul_tensor, add_tensor],
+        list(quant_node.outputs),
+        spec,
+    )
+    return graph
+
+
+@contextagnostic
+class DequantQuantToRequantShiftPass(ReplaceSequentialPatternPass):
+    """Fold a ``Dequant → Quant`` chain (produced by Brevitas QCDQ export) into
+    a single ``RequantShift`` so downstream RequantMerge passes can absorb it
+    into their preceding Conv/Gemm/MatMul/Add."""
+
+    def __init__(self):
+        graph = gs.Graph()
+        _input = gs.Variable(name = 'input_1')
+        deq_out = graph.layer(inputs = [_input], outputs = ['deq_out'], op = 'Dequant', name = 'deq')
+        q_out = graph.layer(inputs = deq_out, outputs = ['q_out'], op = 'Quant', name = 'q')
+        graph.outputs.append(q_out)
+        graph.inputs.append(_input)
+
+        name = "_DEQUANT_QUANT_TO_RQS_PASS"
+        super().__init__(graph, _dequant_quant_to_rqs_fun, name)
+
+
+# -------------------------------------------------------------------------- #
+# Skip leading Quant→Dequant pair: when the network starts with the canonical
+# Brevitas QCDQ activation-quantization pair (fp32 input → Quant → Dequant →
+# first op), Deeploy's first-op binding receives fp32 and refuses (the
+# RequantizedConv it folded into expects int8). The pair is mathematically
+# a "round to int8 grid" no-op; we can drop it at a small precision cost for
+# PTQ, leaving the int8 chain to absorb everything from the next RequantShift
+# onward.
+# -------------------------------------------------------------------------- #
+def _skip_input_quant_dequant_fun(graph: gs.Graph, match: Match, name: str):
+    matched_nodes = list(match.nodes_map.values())
+    quant_node = matched_nodes[0]
+    dequant_node = matched_nodes[1]
+
+    # Only collapse if the Quant's input is a graph input (the leading
+    # activation-quant pair, not an interior one).
+    quant_input = quant_node.inputs[0]
+    if quant_input not in graph.inputs:
+        return graph
+
+    # Drop only the trailing Dequant. The leading Quant stays so its int8
+    # output feeds directly into the first integer op (RequantizedConv etc.).
+    quant_out = quant_node.outputs[0]
+    dequant_out = dequant_node.outputs[0]
+
+    for consumer in list(graph.nodes):
+        for i, inp in enumerate(consumer.inputs):
+            if inp is dequant_out:
+                consumer.inputs[i] = quant_out
+    for i, out in enumerate(graph.outputs):
+        if out is dequant_out:
+            graph.outputs[i] = quant_out
+
+    dequant_node.outputs = []
+    graph.cleanup()
+    return graph
+
+
+@contextagnostic
+class SkipInputQuantDequantPass(ReplaceSequentialPatternPass):
+    """Drop a leading ``Quant → Dequant`` pair at graph input — equivalent
+    to feeding the network with the un-rounded fp32 input.
+
+    Lets the rest of the integer chain (RequantShift / RequantizedConv) take
+    over from the first conv onward."""
+
+    def __init__(self):
+        graph = gs.Graph()
+        _input = gs.Variable(name = 'input_1')
+        q_out = graph.layer(inputs = [_input], outputs = ['q_out'], op = 'Quant', name = 'q')
+        d_out = graph.layer(inputs = q_out, outputs = ['d_out'], op = 'Dequant', name = 'd')
+        graph.outputs.append(d_out)
+        graph.inputs.append(_input)
+
+        name = "_SKIP_INPUT_QD_PASS"
+        super().__init__(graph, _skip_input_quant_dequant_fun, name)

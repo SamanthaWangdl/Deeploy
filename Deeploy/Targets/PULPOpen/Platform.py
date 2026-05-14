@@ -26,9 +26,10 @@ from Deeploy.Targets.Generic.Parsers import AddParser, ConcatParser, DequantPars
     SoftmaxParser, TransposeParser, UniformRequantShiftParser, UnsqueezeParser, iHardswishParser, iRMSNormParser, \
     iSoftmaxParser
 from Deeploy.Targets.Generic.Templates import AllocateTemplate as BasicAllocateTemplate
-from Deeploy.Targets.Generic.TopologyOptimizationPasses.Passes import DequantPatternPass, IntegerDivRequantMergePass, \
-    MergeConstAddAndRequantPass, MergeTrueIntegerDivRequantShiftPass, QuantPatternPass, RQSSplitPass, \
-    SkipEmptyConcatPass, SkipUnityRequantPass, iGELURequantMergePass, iHardswishRequantMergePass
+from Deeploy.Targets.Generic.TopologyOptimizationPasses.Passes import DequantPatternPass, DequantQuantToRequantShiftPass, \
+    IntegerDivRequantMergePass, MergeConstAddAndRequantPass, MergeTrueIntegerDivRequantShiftPass, QuantPatternPass, \
+    RQSSplitPass, SkipEmptyConcatPass, SkipInputQuantDequantPass, SkipUnityRequantPass, iGELURequantMergePass, \
+    iHardswishRequantMergePass
 from Deeploy.Targets.PULPOpen.Bindings import BasicDequantBindings, BasicQuantBindings, PULPDMASliceBindings, \
     PULPDWConv1DBinding
 from Deeploy.Targets.PULPOpen.Layers import PULPRQSConvLayer, PULPRQSGEMMLayer
@@ -227,6 +228,8 @@ class PULPStructBuffer(StructBuffer):
 PULPOptimizer = TopologyOptimizer([
     QuantPatternPass(),
     DequantPatternPass(),
+    SkipInputQuantDequantPass(),
+    DequantQuantToRequantShiftPass(),
     SkipEmptyConcatPass(),
     SkipUnityRequantPass(previous_op_regex = "Concat", num_inputs = 2),
     SkipUnityRequantPass(previous_op_regex = "Reshape|Transpose", num_inputs = 1),
