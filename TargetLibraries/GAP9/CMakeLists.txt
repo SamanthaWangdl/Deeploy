@@ -31,6 +31,16 @@ target_compile_options(deeploygap9 PRIVATE
   -Wno-attributes
 )
 
+# The GAP9 SDK injects -Os globally, which spills these kernels' accumulators and
+# costs them about a factor of two. Scoped to the three files that need it, since
+# -O3 across the whole library is a separate change.
+set_source_files_properties(
+  ${CMAKE_CURRENT_LIST_DIR}/../PULPOpen/src/PULPDWConv3x3.c
+  ${CMAKE_CURRENT_LIST_DIR}/../PULPOpen/src/PULPPWConv1x1.c
+  ${CMAKE_CURRENT_LIST_DIR}/../PULPOpen/src/PULPStemConv3x3.c
+  PROPERTIES COMPILE_OPTIONS "-O3"
+)
+
 target_link_libraries(deeploygap9 PUBLIC pmsis)
 
 # Compile the hot forward kernels at -O3 (set last so it wins over the SDK's

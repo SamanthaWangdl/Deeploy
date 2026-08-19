@@ -19,6 +19,10 @@
 
 #include "DeeployBasicMath.h"
 
+#include "kernel/PULPDWConv3x3.h"
+#include "kernel/PULPPWConv1x1.h"
+#include "kernel/PULPStemConv3x3.h"
+
 #include "dory_dma.h"
 #include "dory_mem.h"
 
