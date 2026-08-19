@@ -30,6 +30,12 @@ def dictOfArrays(arrayOfDicts: Sequence[Mapping[KT, VT]]) -> Mapping[KT, List[VT
 
 class TilingHoistingMixIn:
 
+    # Where the hoisted tile-control tables (numTiles, DMA cmd / size / stride, tile dims, base
+    # offsets) go. None keeps them in the tiled level. Setting it to "L2" on GAP9 moves them away
+    # from the cluster master stack, where a deep stack write can corrupt a DMA cmd and hang
+    # mchan_transfer_wait().
+    tileControlTableMemoryLevel: Optional[str] = None
+
     _DEFAULT_HOIST_PREFIX = "TILING_CODEGEN_"
 
     def __init__(self, memory: str) -> None:
@@ -60,7 +66,7 @@ class TilingHoistingMixIn:
         else:
             cb._type = PointerClass(BasicDataTypes.minimalIntegerType(values))
         cb._instance = cb._type(cb.name, ctxt)
-        cb._memoryLevel = self.memory
+        cb._memoryLevel = self.tileControlTableMemoryLevel or self.memory
         return cb
 
     def _hoistReference(self,
