@@ -206,6 +206,30 @@ PULPRQSConv2DBindings = [
     for type1, type2 in zip([int8_t, int8_t, uint8_t, uint8_t], [int8_t, uint8_t, int8_t, uint8_t])
 ]
 
+# only the u8/u8/i8 kernel writes channels-first; the other signatures stay on
+# PULPRQSConv2DBindings, whose parser gate rejects them
+PULPRQSPWConv2DBindings = [
+    NodeBinding(
+        PULPConvChecker([
+            PointerClass(uint8_t),
+            PointerClass(int8_t),
+            PointerClass(int32_t),
+            PointerClass(int32_t),
+            PointerClass(int32_t)
+        ], [PointerClass(uint8_t)]), ConvTemplate.PULPPWConv2D_8_Template, ForkTransformer)
+]
+
+PULPRQSStemConv2DBindings = [
+    NodeBinding(
+        PULPConvChecker([
+            PointerClass(uint8_t),
+            PointerClass(int8_t),
+            PointerClass(int32_t),
+            PointerClass(int32_t),
+            PointerClass(int32_t)
+        ], [PointerClass(uint8_t)]), ConvTemplate.PULPStemConv2D_8_Template, ForkTransformer)
+]
+
 PULPRQSDWConv2DBindings = [
     NodeBinding(
         PULPConvChecker([

@@ -347,6 +347,92 @@ def _PULP_NCHWtoNHWC_dw_fun(graph: gs.Graph, match: Match, name: str, default_ch
     return graph
 
 
+def _hasDepthwiseConsumer(node: gs.Node, channels: int) -> bool:
+    # stated without reading a layout: this pass may already have relabelled the
+    # consumer while leaving its input channels-first
+    consumers = node.outputs[0].outputs
+    if len(consumers) != 1 or consumers[0].op not in ["Conv", "RequantizedConv"]:
+        return False
+    return consumers[0].attrs.get("group", 1) == channels
+
+
+def _hasUnsignedOutput(node: gs.Node) -> bool:
+    # The two predicates below decide a layout before the types are resolved, and their
+    # kernels exist for an unsigned output only. A node left channels-first with no
+    # kernel to read it is a parse failure, so an absent attribute has to mean no.
+    signed = node.attrs.get("signed")
+    values = getattr(signed, "values", signed)
+    return values is not None and not np.any(values)
+
+
+def isPULPPointwise(node: gs.Node) -> bool:
+    """1x1 / stride 1 / no-pad convolutions the PULP kernel can write channels-first.
+
+    The lowering pass, the parser and the template must agree on this exactly, or
+    a node ends up producing one layout and being read as the other.
+    """
+    if node.op != "RequantizedConv" or node.attrs.get("group", 1) != 1:
+        return False
+    if not _hasUnsignedOutput(node):
+        return False
+    if len(node.inputs) < 2 or not isinstance(node.inputs[1], gs.Constant):
+        return False
+    if list(node.attrs.get("kernel_shape", [])) != [1, 1]:
+        return False
+    if list(node.attrs.get("strides", [1, 1])) != [1, 1]:
+        return False
+    if any(pad != 0 for pad in node.attrs.get("pads", [0, 0, 0, 0])):
+        return False
+    weightShape = node.inputs[1].shape
+    if len(weightShape) != 4:
+        return False
+    # this runs both before and after the layout pass, which rewrites the weight
+    # from [Cout, Cin, 1, 1] to [Cout, 1, 1, Cin]
+    chIn = weightShape[1] if node.attrs.get("channels_first", True) else weightShape[3]
+    # the kernel blocks two output channels and four input bytes at a time
+    # No condition on the consumer, unlike isPULPStemConv: only this node's output
+    # side moves, so a consumer that wants channels-last just gets one transpose
+    # back. That is the cheaper half of the trade -- restricting this to depthwise
+    # consumers sends MobileNetV1's last pointwise to pulp_nn_pointwise, whose row
+    # split degenerates on its 3x3 output, and costs 37k cycles to save 2k.
+    return weightShape[0] % 2 == 0 and chIn % 4 == 0
+
+
+def _PULP_NCHWtoNHWC_pw_fun(graph: gs.Graph, match: Match, name: str, default_channels_first: bool = True):
+    node = next(iter((match.nodes_map.values())))
+
+    if not isPULPPointwise(node):
+        return graph
+
+    channels_first = node.attrs.get("channels_first", True)
+    if (channels_first != default_channels_first):
+        tensorIn = node.inputs[0]
+        spatialDims = len(node.inputs[1].shape) - 2
+
+        permuteIn = _transformLayoutPermutation(len(tensorIn.shape), spatialDims, default_channels_first)
+        graph.nodes.append(_appendTranspose(tensorIn, node, permuteIn))
+
+        # the PULP pointwise kernel writes channels-first, so unlike the dense
+        # case the output needs no transpose back
+
+        # RequantizedConv: [weights, mul, add, opt. shift]
+        for tensor in node.inputs[1:]:
+            _transformLayoutConst(tensor, spatialDims, default_channels_first)
+
+        node.attrs["channels_first"] = default_channels_first
+
+    return graph
+
+
+@contextagnostic
+class PULPNCHWtoNHWCPwConvPass(ReplaceSequentialPatternPass):
+
+    def __init__(self, default_channels_first: bool = True):
+        graph = _singleNodePattern(op = "RequantizedConv")
+        name = "_PULP_NCHW_TO_NHWC_PW_CONV_PASS"
+        super().__init__(graph, partial(_PULP_NCHWtoNHWC_pw_fun, default_channels_first = default_channels_first), name)
+
+
 @contextagnostic
 class PULPNCHWtoNHWCDwConvPass(ReplaceSequentialPatternPass):
 
@@ -369,6 +455,62 @@ class NCHWtoNHWCPass(SequentialPass):
         super().__init__(*passes)
 
 
+def isPULPStemConv(node: gs.Node) -> bool:
+    """First-layer convolution that can stay channels-first on both sides.
+
+    Both ends have to want that layout: the input must be a graph input, which
+    arrives channels-first, and the consumer must be a depthwise convolution,
+    which reads channels-first. Feeding a dense convolution instead would only
+    move the transpose rather than remove it. The shape is the one
+    PULPStemConv3x3.c has a fast path for; anything else would land in its
+    reference loop, which is far slower than the im2col kernel it replaced.
+    """
+    if node.op != "RequantizedConv" or node.attrs.get("group", 1) != 1:
+        return False
+    if not _hasUnsignedOutput(node):
+        return False
+    if len(node.inputs) < 2 or not isinstance(node.inputs[1], gs.Constant):
+        return False
+    if len(node.inputs[0].inputs) != 0:
+        return False
+    # spelled out rather than tested for a property: an absent attribute means no
+    # padding and unit strides, which the fast path in PULPStemConv3x3.c is not
+    # written for -- its rows advance by two and carry only the window's bottom
+    # row over, which is the stride-2 overlap
+    if list(node.attrs.get("kernel_shape", [])) != [3, 3]:
+        return False
+    if list(node.attrs.get("pads", [])) != [1, 1, 1, 1]:
+        return False
+    if list(node.attrs.get("strides", [])) != [2, 2]:
+        return False
+    weightShape = node.inputs[1].shape
+    if len(weightShape) != 4:
+        return False
+    chIn = weightShape[1] if node.attrs.get("channels_first", True) else weightShape[3]
+    if chIn != 3:
+        return False
+    return _hasDepthwiseConsumer(node, weightShape[0])
+
+
+def _PULP_NCHWtoNHWC_conv_fun(graph: gs.Graph, match: Match, name: str, default_channels_first: bool = True):
+    node = next(iter((match.nodes_map.values())))
+
+    if isPULPStemConv(node):
+        return graph
+
+    return _NCHWtoNHWC_fun(graph, match, name, default_channels_first)
+
+
+@contextagnostic
+class PULPNCHWtoNHWCConvPass(ReplaceSequentialPatternPass):
+
+    def __init__(self, default_channels_first: bool = True):
+        graph = _singleNodePattern(op = "Conv|RequantizedConv")
+        name = "_PULP_NCHW_TO_NHWC_CONV_PASS"
+        super().__init__(graph, partial(_PULP_NCHWtoNHWC_conv_fun, default_channels_first = default_channels_first),
+                         name, NonBranchingMatcher(regex_op = True))
+
+
 @contextagnostic
 class PULPNCHWtoNHWCPass(SequentialPass):
 
@@ -377,7 +519,8 @@ class PULPNCHWtoNHWCPass(SequentialPass):
             NCHWtoNHWCPadPass(default_channels_first),
             NCHWtoNHWCMaxPoolPass(default_channels_first),
             PULPNCHWtoNHWCDwConvPass(default_channels_first),
-            NCHWtoNHWCConvPass(default_channels_first),
+            PULPNCHWtoNHWCPwConvPass(default_channels_first),
+            PULPNCHWtoNHWCConvPass(default_channels_first),
         ]
         super().__init__(*passes)
 

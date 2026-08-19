@@ -7,6 +7,8 @@ from typing import Tuple
 
 import onnx_graphsurgeon as gs
 
+from Deeploy.CommonExtensions.OptimizationPasses.TopologyOptimizationPasses.LoweringOptimizationPasses import \
+    isPULPPointwise, isPULPStemConv
 from Deeploy.DeeployTypes import NetworkContext
 from Deeploy.Targets.Generic.Parsers import Conv2DParser, GEMMParser, ReduceMeanParser, RQSConv1DParser, \
     RQSConv2DParser, RQSParserInterface
@@ -60,6 +62,60 @@ class PULPConv2DParser(RQSConv2DParser):
             return newCtxt, True
 
         return ctxt, False
+
+
+class PULPPWConv2DParser(PULPConv2DParser):
+    """Gate for the channels-first-output pointwise kernel.
+
+    Rejecting here is the safety net: anything this turns down falls through to
+    PULPConv2DParser, which keeps the channels-last output and its transpose.
+    The predicate has to match isPULPPointwise, which the lowering pass used to
+    decide whether to emit that transpose at all.
+    """
+
+    def parseNode(self, node: gs.Node) -> (bool):
+        if not isPULPPointwise(node):
+            return False
+        if not super().parseNode(node):
+            return False
+        self.operatorRepresentation['channels_first_output'] = True
+        return True
+
+    def parseNodeCtxt(self,
+                      ctxt: NetworkContext,
+                      node: gs.Node,
+                      channels_first: bool = True) -> Tuple[NetworkContext, bool]:
+
+        newCtxt, ret = super().parseNodeCtxt(ctxt, node, channels_first)
+
+        if ret:
+            # the base parser read the output as channels-last
+            data_out = newCtxt.lookup(self.operatorRepresentation['data_out'])
+            self.operatorRepresentation['ch_im_out'] = data_out.shape[1]
+            self.operatorRepresentation['dim_im_out_x'] = data_out.shape[2]
+            self.operatorRepresentation['dim_im_out_y'] = data_out.shape[3]
+
+        return newCtxt, ret
+
+
+class PULPStemConv2DParser(PULPConv2DParser):
+    """Gate for the channels-first stem kernel; matches isPULPStemConv, which the
+    lowering pass used to leave this node's layout alone."""
+
+    def parseNode(self, node: gs.Node) -> (bool):
+        if not isPULPStemConv(node):
+            return False
+        if not super().parseNode(node):
+            return False
+        self.operatorRepresentation['channels_first_output'] = True
+        return True
+
+    def parseNodeCtxt(self,
+                      ctxt: NetworkContext,
+                      node: gs.Node,
+                      channels_first: bool = True) -> Tuple[NetworkContext, bool]:
+        # both sides of this node kept the channels-first order
+        return super().parseNodeCtxt(ctxt, node, True)
 
 
 class PULPFPConv2DParser(Conv2DParser):

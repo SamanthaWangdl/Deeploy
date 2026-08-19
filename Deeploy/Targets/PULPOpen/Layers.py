@@ -15,12 +15,11 @@ class PULPRQSConvLayer(RQSConvLayer):
 
     def computeShapes(self, inputShapes: Shape, outputShapes: Shape, operatorRepresentation,
                       channels_first) -> Tuple[Shape, Shape]:
-        if channels_first:
-            inputShapes[2] = [outputShapes[0][1]]  # Channels out dimension of Kernel
-            inputShapes[3] = [outputShapes[0][1]]  # Channels out dimension of Kernel
-        else:
-            inputShapes[2] = [outputShapes[0][-1]]  # Channels out dimension of Kernel
-            inputShapes[3] = [outputShapes[0][-1]]  # Channels out dimension of Kernel
+        # the pointwise kernel writes channels-first while reading channels-last, so
+        # the requantization constants follow the output's own channel axis
+        channelDim = 1 if (channels_first or operatorRepresentation.get('channels_first_output', False)) else -1
+        inputShapes[2] = [outputShapes[0][channelDim]]  # Channels out dimension of Kernel
+        inputShapes[3] = [outputShapes[0][channelDim]]  # Channels out dimension of Kernel
         return (inputShapes, outputShapes)
 
 

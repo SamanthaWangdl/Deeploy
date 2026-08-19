@@ -58,7 +58,7 @@ void DeeployPULP_DW_Conv2d_3x3_u8_u8_i8(
         padding_x_right == 1 && padding_y_top == 1 && padding_y_bottom == 1 &&
         dim_out_x == (dim_in_x + stride_x - 1) / stride_x &&
         dim_out_y == (dim_in_y + stride_y - 1) / stride_y && dim_in_x >= 3 &&
-        pBias == NULL && flag_relu && flag_batch_norm)) {
+        dim_in_y >= 2 && pBias == NULL && flag_relu && flag_batch_norm)) {
     pulp_nn_depthwise_u8_u8_i8(
         pIn, pIm2ColBuffer, pBias, pOut, pWeight, pWtBuffer, pKappa, pLambda,
         out_mult, out_shift, dim_in_x, dim_in_y, ch_in, dim_out_x, dim_out_y,
@@ -181,7 +181,11 @@ void DeeployPULP_DW_Conv2d_3x3_u8_u8_i8(
         int y = 0;
         /* unrolled by two so the window's bottom row becomes the next window's
            top by renaming rather than a register move */
-        for (; y + 2 <= yFull; y += 2) {
+        /* one iteration short of the end: this body reads the next window's
+           rows before it knows there is one, and at the end those would be
+           outside the plane. The row peeled off below closes the gap without
+           reading ahead. */
+        for (; y + 3 <= yFull; y += 2) {
           int acc = SumDotp4(V0, w0, 0);
           acc = SumDotp4(V1, w1, acc);
           acc = SumDotp4(V2, w2, acc);
@@ -200,7 +204,7 @@ void DeeployPULP_DW_Conv2d_3x3_u8_u8_i8(
           V1 = *(v4u *)pr;
           V2 = *(v4u *)(pr + W);
         }
-        for (; y < yFull; y++) {
+        for (; y + 1 < yFull; y++) {
           int acc = SumDotp4(V0, w0, 0);
           acc = SumDotp4(V1, w1, acc);
           acc = SumDotp4(V2, w2, acc);
@@ -210,6 +214,15 @@ void DeeployPULP_DW_Conv2d_3x3_u8_u8_i8(
           V0 = V2;
           V1 = *(v4u *)pr;
           V2 = *(v4u *)(pr + W);
+        }
+        if (y < yFull) {
+          int acc = SumDotp4(V0, w0, 0);
+          acc = SumDotp4(V1, w1, acc);
+          acc = SumDotp4(V2, w2, acc);
+          *po = DeeployPULP_dw_requant_u8(acc, kk, ll, out_shift);
+          po += OS;
+          V0 = V2;
+          y++;
         }
         for (; y < dim_out_y; y++) {
           /* an odd input height leaves the bottom row of the last window on the

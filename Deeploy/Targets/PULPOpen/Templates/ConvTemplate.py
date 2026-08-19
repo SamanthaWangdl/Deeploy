@@ -44,6 +44,29 @@ class PULP2DConvTemplate(NodeTemplate):
         return ctxt, operatorRepresentation, [im2col_name]
 
 
+class PULPStemConvTemplate(PULP2DConvTemplate):
+
+    @staticmethod
+    def computeTransientBuffersSize(
+            ctxt: NetworkContext,
+            operatorRepresentation: OperatorRepresentation) -> List[Tuple[str, Union[int, IntVar]]]:
+        # PULPStemConv3x3.c sums the input channels through one column of 32-bit
+        # accumulators per core, so this follows the output tile's height.
+        dim = 4 * 8 * operatorRepresentation['dim_im_out_x']
+        name = operatorRepresentation['nodeName'] + "_buffer"
+        return [(name, dim)]
+
+    def hoistTransientBuffers(self, ctxt: NetworkContext,
+                              operatorRepresentation: OperatorRepresentation) -> Tuple[NetworkContext, Dict, List[str]]:
+        # the inherited one asks PULP2DConvTemplate for the size by name, which
+        # would hand back the im2col bound instead of the one above
+        name, dim = self.computeTransientBuffersSize(ctxt, operatorRepresentation)[0]
+        ctxt.hoistTransientBuffer(name, dim)
+        operatorRepresentation['ctxtBuffer'] = name
+        operatorRepresentation['ctxtBufferSize'] = dim
+        return ctxt, operatorRepresentation, [name]
+
+
 class PULP2DDWConvTemplate(PULP2DConvTemplate):
 
     def __init__(self, templateStr):
@@ -154,14 +177,19 @@ else:
 
 <%
 operatorString = ''
-if dim_kernel_x == 1 and dim_kernel_y == 1:
-    operatorString = 'pointwise'
+# A 1x1 kernel makes the im2col copy the identity in HWC, so pulp_nn_pointwise
+# indexes the input with the output coordinate and skips it. That only holds
+# without stride or padding. Shapes PULPPWConv2D_8_Template handles never reach
+# here; this covers the ones its parser turns down.
+if (dim_kernel_x == 1 and dim_kernel_y == 1 and stride_x == 1 and stride_y == 1 and
+        padding_x_left == 0 and padding_x_right == 0 and padding_y_top == 0 and
+        padding_y_bottom == 0):
+    kernelName = 'pulp_nn_pointwise' + signatureString
 else:
-    operatorString = 'conv'
-operatorString = 'conv'
+    kernelName = 'pulp_nn_conv' + signatureString
 %>
 
-pulp_nn_${operatorString}${signatureString}(${data_in}, ${ctxtBuffer}, NULL, ${data_out}, ${weight}, ${mul}, ${add}, 1, ${log2D}, ${dim_im_in_y}, ${dim_im_in_x}, ${ch_im_in}, ${dim_im_out_y}, ${dim_im_out_x}, ${ch_im_out}, ${dim_kernel_y}, ${dim_kernel_x}, ${padding_y_top}, ${padding_y_bottom}, ${padding_x_left}, ${padding_x_right}, ${stride_y}, ${stride_x}, 1, 1);
+${kernelName}(${data_in}, ${ctxtBuffer}, NULL, ${data_out}, ${weight}, ${mul}, ${add}, 1, ${log2D}, ${dim_im_in_y}, ${dim_im_in_x}, ${ch_im_in}, ${dim_im_out_y}, ${dim_im_out_x}, ${ch_im_out}, ${dim_kernel_y}, ${dim_kernel_x}, ${padding_y_top}, ${padding_y_bottom}, ${padding_x_left}, ${padding_x_right}, ${stride_y}, ${stride_x}, 1, 1);
 """)
 
 PULPDWConv2D_8_Template = PULP2DDWConvTemplate("""
@@ -180,8 +208,13 @@ if weight_signed:
     signatureString += '_i8'
 else:
     signatureString += '_u8'
+# PULPDWConv3x3.c specialises 3x3/stride-1/pad-1 and falls back for other shapes.
+if signatureString == '_u8_u8_i8':
+    kernelName = 'DeeployPULP_DW_Conv2d_3x3_u8_u8_i8'
+else:
+    kernelName = 'pulp_nn_depthwise' + signatureString
 %>
-pulp_nn_depthwise${signatureString}(${data_in}, ${ctxtBuffer}, NULL, ${data_out}, ${weight}, NULL, ${mul}, ${add}, 1, ${log2D}, ${dim_im_in_y}, ${dim_im_in_x}, ${ch_im_in}, ${dim_im_out_y}, ${dim_im_out_x}, ${ch_im_out}, ${dim_kernel_y}, ${dim_kernel_x}, ${padding_y_top}, ${padding_y_bottom}, ${padding_x_left}, ${padding_x_right}, ${stride_y}, ${stride_x}, 1, 1);
+${kernelName}(${data_in}, ${ctxtBuffer}, NULL, ${data_out}, ${weight}, NULL, ${mul}, ${add}, 1, ${log2D}, ${dim_im_in_y}, ${dim_im_in_x}, ${ch_im_in}, ${dim_im_out_y}, ${dim_im_out_x}, ${ch_im_out}, ${dim_kernel_y}, ${dim_kernel_x}, ${padding_y_top}, ${padding_y_bottom}, ${padding_x_left}, ${padding_x_right}, ${stride_y}, ${stride_x}, 1, 1);
 """)
 
 PULPConv1D_8_Template = PULP1DConvTemplate("""
@@ -223,4 +256,44 @@ else:
     signatureString += '_u8'
 %>
 pulp_nn_depthwise${signatureString}(${data_in}, ${ctxtBuffer}, NULL, ${data_out}, ${weight}, NULL, ${mul}, ${add}, 1, ${log2D}, 1, ${dim_im_in_y}, ${ch_im_in}, 1, ${dim_im_out_y}, ${ch_im_out}, 1, ${dim_kernel_y}, ${padding_y_top}, ${padding_y_bottom}, 0, 0, 1, ${stride_y}, 1, 1);
+""")
+
+PULPPWConv2D_8_Template = PULP2DConvTemplate("""
+// PULP NN POINTWISE, channels-first output
+<%
+signatureString = ''
+if input_signed:
+    signatureString += '_i8'
+else:
+    signatureString += '_u8'
+if output_signed:
+    signatureString += '_i8'
+else:
+    signatureString += '_u8'
+if weight_signed:
+    signatureString += '_i8'
+else:
+    signatureString += '_u8'
+%>
+DeeployPULP_PW_Conv2d_1x1_CHWOut${signatureString}(${data_in}, ${ctxtBuffer}, NULL, ${data_out}, ${weight}, ${mul}, ${add}, 1, ${log2D}, ${dim_im_in_y}, ${dim_im_in_x}, ${ch_im_in}, ${dim_im_out_y}, ${dim_im_out_x}, ${ch_im_out}, ${dim_kernel_y}, ${dim_kernel_x}, ${padding_y_top}, ${padding_y_bottom}, ${padding_x_left}, ${padding_x_right}, ${stride_y}, ${stride_x}, 1, 1);
+""")
+
+PULPStemConv2D_8_Template = PULPStemConvTemplate("""
+// PULP NN CONV, channels-first in and out
+<%
+signatureString = ''
+if input_signed:
+    signatureString += '_i8'
+else:
+    signatureString += '_u8'
+if output_signed:
+    signatureString += '_i8'
+else:
+    signatureString += '_u8'
+if weight_signed:
+    signatureString += '_i8'
+else:
+    signatureString += '_u8'
+%>
+DeeployPULP_Conv2d_3x3_CHW${signatureString}(${data_in}, ${ctxtBuffer}, NULL, ${data_out}, ${weight}, ${mul}, ${add}, 1, ${log2D}, ${dim_im_in_y}, ${dim_im_in_x}, ${ch_im_in}, ${dim_im_out_y}, ${dim_im_out_x}, ${ch_im_out}, ${dim_kernel_y}, ${dim_kernel_x}, ${padding_y_top}, ${padding_y_bottom}, ${padding_x_left}, ${padding_x_right}, ${stride_y}, ${stride_x}, 1, 1);
 """)
