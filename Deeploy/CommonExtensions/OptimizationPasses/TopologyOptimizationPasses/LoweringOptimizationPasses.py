@@ -347,6 +347,29 @@ def _PULP_NCHWtoNHWC_dw_fun(graph: gs.Graph, match: Match, name: str, default_ch
     return graph
 
 
+def _hasUnsignedInput(node: gs.Node) -> bool:
+    # The kernel this gate selects takes u8 activations. Types are not resolved
+    # yet here, so the producer's `signed` attribute is the only evidence, and an
+    # input with no producer -- a graph input, a constant -- has to count as no:
+    # committing the layout for a node whose binding then does not exist leaves a
+    # graph the parser cannot map at all, since the output transpose is gone.
+    # Walk back through the transposes the earlier layout passes inserted: the
+    # producer that carries `signed` is the compute node behind them.
+    tensor = node.inputs[0]
+    for _ in range(4):
+        producers = tensor.inputs
+        if len(producers) != 1:
+            return False
+        if producers[0].op != "Transpose":
+            break
+        tensor = producers[0].inputs[0]
+    else:
+        return False
+    signed = producers[0].attrs.get("signed")
+    values = getattr(signed, "values", signed)
+    return values is not None and not np.any(values)
+
+
 def _hasDepthwiseConsumer(node: gs.Node, channels: int) -> bool:
     # stated without reading a layout: this pass may already have relabelled the
     # consumer while leaving its input channels-first
@@ -389,6 +412,8 @@ def isPULPPointwise(node: gs.Node) -> bool:
     # this runs both before and after the layout pass, which rewrites the weight
     # from [Cout, Cin, 1, 1] to [Cout, 1, 1, Cin]
     chIn = weightShape[1] if node.attrs.get("channels_first", True) else weightShape[3]
+    if not _hasUnsignedInput(node):
+        return False
     # the kernel blocks two output channels and four input bytes at a time
     # No condition on the consumer, unlike isPULPStemConv: only this node's output
     # side moves, so a consumer that wants channels-last just gets one transpose
