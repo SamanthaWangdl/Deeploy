@@ -22,6 +22,7 @@ This file contains the changelog for the Deeploy project. The changelog is divid
 - Add support for Operators for Generic target needed in MAGIA [#193]( https://github.com/pulp-platform/Deeploy/pull/193)
 - Fix GAP9 L3 Board Tests: readfs Flash Ordering and Duplicate Input Data [#196](https://github.com/pulp-platform/Deeploy/pull/196)
 - Add SoCDAML Part III: hands-on lab for adding a new int8 operator [#194](https://github.com/pulp-platform/Deeploy/pull/194)
+- Match GAP9 SDK MLPerf Tiny Performance with Specialised Depthwise and Pointwise Kernels [#206](https://github.com/pulp-platform/Deeploy/pull/206)
 
 ### Added
 - tests for Regular and DW Conv2D with 3x3 kernel
@@ -43,6 +44,8 @@ This file contains the changelog for the Deeploy project. The changelog is divid
 - Add support for the Generic target for the following operators [Ceil](https://onnx.ai/onnx/operators/onnx__Ceil.html), [Floor](https://onnx.ai/onnx/operators/onnx__Floor.html), [Clip](https://onnx.ai/onnx/operators/onnx__Clip.html), [Sub](https://onnx.ai/onnx/operators/onnx__Sub.html), [Exp](https://onnx.ai/onnx/operators/onnx__Exp.html), [Sigmoid](https://onnx.ai/onnx/operators/onnx__Sigmoid.html), [Swish](https://onnx.ai/onnx/operators/onnx__Swish.html), [HardSigmoid](https://onnx.ai/onnx/operators/onnx__HardSigmoid.html), [HardSwish](https://onnx.ai/onnx/operators/onnx__HardSwish.html), [InstanceNormalization](https://onnx.ai/onnx/operators/onnx__InstanceNormalization.html), [GroupNormalization](https://onnx.ai/onnx/operators/onnx__GroupNormalization.html), [AveragePool](https://onnx.ai/onnx/operators/onnx__AveragePool.html), [GlobalAveragePool](https://onnx.ai/onnx/operators/onnx__GlobalAveragePool.html), [GlobalMaxPool](https://onnx.ai/onnx/operators/onnx__GlobalMaxPool.html).
 - SoCDAML Part III lab: add an int8 `iLeakyReLU` to Deeploy and optimise it on Siracusa from scalar to tiled multi-core XPULP SIMD, with student skeletons and a TA reference under `Tutorials/`
 - Document that `--profileTiling` crashes GVSoC on the larger microLlama graphs (invalid access)
+- Specialised PULPOpen kernels for 3x3 depthwise (`PULPDWConv3x3.c`), 1x1 pointwise (`PULPPWConv1x1.c`) and a three-channel 3x3 stem (`PULPStemConv3x3.c`), with bindings and tile constraints for PULPOpen and GAP9
+- Lowering passes `PULPNCHWtoNHWCPwConvPass` and `PULPNCHWtoNHWCConvPass`, keeping a 1x1 convolution's output and a depthwise-feeding stem channels-first so the transposes at depthwise boundaries cancel
 
 ### Changed
 - Refactor the topology optimization pass `NeurekaReshapePointwiseConvolutionPass` and Neureka's Tile constraints
