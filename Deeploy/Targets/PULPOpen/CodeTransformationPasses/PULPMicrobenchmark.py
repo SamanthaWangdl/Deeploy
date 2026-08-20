@@ -12,7 +12,7 @@ class PULPMicrobenchmark(CodeTransformationPass):
 
     _preTemplate = NodeTemplate("""
     perf_stats_t ${op}_perf_start, ${op}_perf_end, ${op}_perf_total;
-    if (pi_core_id() == 0) {
+    if (pi_core_id() == 0 || pi_core_id() == (unsigned int)pi_cl_cluster_nb_cores()) {
         perf_bench_init();
         perf_bench_start();
         perf_bench_read(&${op}_perf_start);
@@ -20,7 +20,7 @@ class PULPMicrobenchmark(CodeTransformationPass):
     """)
 
     _postTemplate = NodeTemplate("""
-    if (pi_core_id() == 0) {
+    if (pi_core_id() == 0 || pi_core_id() == (unsigned int)pi_cl_cluster_nb_cores()) {
         perf_bench_stop();
         perf_bench_read(&${op}_perf_end);
         perf_bench_diff(&${op}_perf_total, &${op}_perf_end, &${op}_perf_start);

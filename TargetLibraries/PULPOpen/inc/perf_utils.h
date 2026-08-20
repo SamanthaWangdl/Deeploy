@@ -11,7 +11,10 @@
 
 #include "pmsis.h"
 
-// Performance event IDs (compatible with PMSIS)
+// Performance event IDs. The PULP SDK spells these CSR_PCER_*; the GAP9 SDK's
+// pmsis provides the PI_PERF_* names itself, as enum constants the preprocessor
+// cannot see -- hence the platform test rather than #ifndef.
+#ifndef __GAP9__
 #define PI_PERF_CYCLES CSR_PCER_CYCLES
 #define PI_PERF_INSTR CSR_PCER_INSTR
 #define PI_PERF_LD_STALL CSR_PCER_LD_STALL
@@ -28,6 +31,11 @@
 #define PI_PERF_LD_EXT_CYC CSR_PCER_LD_EXT_CYC
 #define PI_PERF_ST_EXT_CYC CSR_PCER_ST_EXT_CYC
 #define PI_PERF_TCDM_CONT CSR_PCER_TCDM_CONT
+#else
+// Same two counters, different spelling in the GAP9 enum.
+#define PI_PERF_JMP_STALL PI_PERF_JR_STALL
+#define PI_PERF_TAKEN_BRANCH PI_PERF_BTAKEN
+#endif
 
 // Benchmark statistics structure
 typedef struct {
@@ -88,9 +96,12 @@ static inline void perf_bench_read(perf_stats_t *stats) {
   stats->tcdm_cont = pi_perf_read(PI_PERF_TCDM_CONT);
 }
 
-// Print performance statistics (core 0 only to avoid clutter)
+// Print performance statistics (one core only, to avoid clutter). GAP9 runs the
+// sequential network code on the cluster controller, whose id is nb_cores, not
+// 0.
 static inline void perf_bench_print(const char *label, perf_stats_t *stats) {
-  if (pi_core_id() == 0) {
+  if (pi_core_id() == 0 ||
+      pi_core_id() == (unsigned int)pi_cl_cluster_nb_cores()) {
     printf("\n=== Performance Statistics: %s ===\n", label);
     printf("Cycles:              %10u\n", stats->cycles);
     printf("Instructions:        %10u\n", stats->instr);

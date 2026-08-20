@@ -23,6 +23,7 @@ This file contains the changelog for the Deeploy project. The changelog is divid
 - Fix GAP9 L3 Board Tests: readfs Flash Ordering and Duplicate Input Data [#196](https://github.com/pulp-platform/Deeploy/pull/196)
 - Add SoCDAML Part III: hands-on lab for adding a new int8 operator [#194](https://github.com/pulp-platform/Deeploy/pull/194)
 
+- Make `--profileMicrobenchmark` Work on GAP9 [#208](https://github.com/pulp-platform/Deeploy/pull/208)
 ### Added
 - tests for Regular and DW Conv2D with 3x3 kernel
 - Neureka's engine-aware DW lowering pass `NeurekaNCHWtoNHWCDwConvPass`
@@ -82,6 +83,7 @@ This file contains the changelog for the Deeploy project. The changelog is divid
 - Fix GAP9 board tests with `--defaultMemLevel L3` reading garbage inputs: place all gapy `--flash-property` options before the positional subcommand and use `image flash run` so the readfs partition (input hex files) is flashed to the device
 - Fix Deeploy 101 tutorial errors: `--profileTiling` usage and the moved intrinsics inventory path
 
+- `--profileMicrobenchmark` silently emitted nothing on GAP9: the pass was absent from the GAP9 code transformers, `perf_utils.h` was neither included nor portable to the GAP9 SDK's counter names, and its core guard never matched GAP9's cluster controller
 ### Removed
 - removed experimental `enable3x3` flag, from Neureka Engine. Now, 3x3 mode is enabled by default.
 - `testDMA.py` was an old test; we now have `test_dmas.py` instead.

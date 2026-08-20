@@ -32,6 +32,7 @@ from Deeploy.Targets.PULPOpen.Bindings import ForkClosure, L3MemoryAwareFunction
 from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPClusterSynch import PULPSynchCoresPass
 from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPClusterTiling import PULPClusterTiling
 from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPL3Tiling import PULPL3Tiling
+from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPMicrobenchmark import PULPMicrobenchmark
 from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPProfileUntiled import PULPProfileUntiled
 from Deeploy.Targets.PULPOpen.DataTypes import PULPDMAFuture
 from Deeploy.Targets.PULPOpen.Templates import ConvTemplate, DMASliceTemplate, FloatAddTemplate, FloatConvTemplate, \
@@ -64,6 +65,7 @@ GAP9Transformer = CodeTransformation([
     MemoryManagementGeneration("L2"),
     MemoryManagementGeneration("L3.*"),
     MemoryManagementGeneration(),
+    PULPMicrobenchmark(),
 ])
 
 # GAP9-specific cluster transformer using cl_dma.h API
@@ -83,6 +85,7 @@ GAP9ClusterTransformer = CodeTransformation([
     MemoryManagementGeneration("L2"),
     MemoryManagementGeneration("L3.*"),
     MemoryManagementGeneration(),
+    PULPMicrobenchmark(),
 ])
 
 # Simple transformer for non-tiling cases
