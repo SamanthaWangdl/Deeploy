@@ -73,7 +73,8 @@ def generateNetwork(args):
         test_inputs, test_outputs, graph = generateDebugConfig(inputs, outputs, activations, graph)
 
     else:
-        # Load as float64 and infer types later
+        # Load as float64 for uniform handling, but preserve original dtypes for type inference
+        test_input_original_dtypes = [inputs[x].dtype for x in inputs.files]
         test_inputs = [inputs[x].reshape(-1).astype(np.float64) for x in inputs.files]
         test_outputs = [outputs[x].reshape(-1).astype(np.float64) for x in outputs.files]
 
@@ -83,6 +84,13 @@ def generateNetwork(args):
             test_outputs = [test_outputs[-2]]
 
     platform, signProp = mapPlatform(args.platform)
+
+    # Enable NE16 3x3 convolutions (DW and Dense) if requested
+    if hasattr(args, 'enable_3x3') and args.enable_3x3:
+        from Deeploy.Targets.NE16.Engine import NE16Engine
+        for engine in platform.engines:
+            if isinstance(engine, NE16Engine):
+                engine.enable3x3 = True
 
     clusters = [engine for engine in platform.engines if isinstance(engine, PULPClusterEngine)]
     for cluster in clusters:
@@ -122,7 +130,8 @@ def generateNetwork(args):
 
             _type = PointerClass(_type)
         else:
-            _type, offset = inferTypeAndOffset(values, signProp)
+            original_dtype = test_input_original_dtypes[index] if index < len(test_input_original_dtypes) else None
+            _type, offset = inferTypeAndOffset(values, signProp, original_dtype = original_dtype)
 
         inputTypes[f"input_{index}"] = _type
         inputOffsets[f"input_{index}"] = offset
@@ -192,6 +201,11 @@ if __name__ == '__main__':
                         help = '(Optional) mapping of input names to offsets. '
                         'If not specified, offsets are set to 0. '
                         'Example: --input-offset-map input_0=0 input_1=128 ...')
+    parser.add_argument('--enable-3x3',
+                        action = 'store_true',
+                        dest = 'enable_3x3',
+                        default = False,
+                        help = 'Enable NE16 3x3 convolutions (DW and Dense)\n')
     parser.add_argument('--shouldFail', action = 'store_true')
     parser.add_argument(
         "--cores",

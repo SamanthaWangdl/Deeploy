@@ -6,7 +6,7 @@ from typing import List, Optional, Sequence, Type
 
 import numpy as np
 
-from Deeploy.AbstractDataTypes import Pointer
+from Deeploy.AbstractDataTypes import FloatImmediate, Pointer
 from Deeploy.CommonExtensions.TypeCheckers.SignPropTypeChecker import SignPropTypeChecker
 from Deeploy.DeeployTypes import ConstantBuffer, OperatorRepresentation, VariableBuffer
 
@@ -273,10 +273,6 @@ class MatMulChecker(SignPropTypeChecker):
                          operatorRepresentation: OperatorRepresentation) -> List[bool]:
         # WIESEP: Hack because previous kernel implementation assumed signed to always be true.
         return [True]
-        # if inputs[0]._signed or isinstance(inputs[1], ConstantBuffer):
-        #   return [True]
-        # else:
-        # return [False]
 
 
 class RQMatMulChecker(SignPropTypeChecker):
@@ -409,7 +405,10 @@ class HardswishChecker(SignPropTypeChecker):
 
     def _inferNumLevels(self, inputs: List[VariableBuffer],
                         operatorRepresentation: OperatorRepresentation) -> List[int]:
-        return [2**(4 * self.input_types[0].referencedType.typeWidth)]
+        input_type = self.input_types[0].referencedType
+        if issubclass(input_type, FloatImmediate):
+            return [2**(input_type.typeWidth)]
+        return [2**(4 * input_type.typeWidth)]
 
     def _inferSignedness(self, inputs: List[VariableBuffer],
                          operatorRepresentation: OperatorRepresentation) -> List[bool]:
@@ -543,6 +542,15 @@ class QuantChecker(SignPropTypeChecker):
     def __init__(self, input_types: Sequence[Type[Pointer]], output_types: Sequence[Type[Pointer]]):
         super().__init__(input_types, output_types)
 
+    def checkOutputType(self, inputs: List[VariableBuffer], operatorRepresentation: OperatorRepresentation) -> bool:
+        outputTypeSigned = self.output_types[0].referencedType.typeMin < 0
+        opSigned = bool(operatorRepresentation['signed'])
+        if opSigned and outputTypeSigned:
+            return True
+        if (not opSigned) and (not outputTypeSigned):
+            return True
+        return False
+
     def _inferNumLevels(self, inputs: List[VariableBuffer],
                         operatorRepresentation: OperatorRepresentation) -> List[int]:
         # Calculate number of levels based on bit_width
@@ -610,3 +618,23 @@ class BatchNormChecker(SignPropTypeChecker):
     def _inferSignedness(self, inputs: List[VariableBuffer],
                          operatorRepresentation: OperatorRepresentation) -> List[bool]:
         return [True]
+
+
+class RMSNormChecker(SignPropTypeChecker):
+
+    def __init__(self, input_types: Sequence[Type[Pointer]], output_types: Sequence[Type[Pointer]]):
+        super().__init__(input_types, output_types)
+
+    def _inferNumLevels(self, inputs: List[VariableBuffer],
+                        operatorRepresentation: OperatorRepresentation) -> List[int]:
+        # RMSNorm: square, mean, sqrt, reciprocal, multiply
+        # Output precision similar to input
+        return [2**(self.input_types[0].referencedType.typeWidth)]
+
+    def _inferSignedness(self, inputs: List[VariableBuffer],
+                         operatorRepresentation: OperatorRepresentation) -> List[bool]:
+        # RMSNorm output can be signed (depending on input signedness)
+        if inputs[0]._signed:
+            return [True]
+        else:
+            return [False]
