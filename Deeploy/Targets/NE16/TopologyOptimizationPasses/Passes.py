@@ -139,7 +139,7 @@ class NE16AdjustWeightMemoryLayoutPass(ReplaceSequentialPatternPass):
 def _findAllMultiplicands(x: int) -> List[int]:
     multiplicands = []
     tmpX = x
-    for i in range(2, math.ceil(math.sqrt(x))):  # Ceil cause range doesn't include the last number
+    for i in range(2, int(math.sqrt(x)) + 1):  # sqrt(x) itself must be tried: 9 = 3*3
         while tmpX % i == 0:
             multiplicands.append(i)
             tmpX = tmpX / i
@@ -159,8 +159,13 @@ def _findAllReshapeOptions(dim: int) -> Generator[Tuple[int, int], None, None]:
             yield a, b
 
 
+# NE16 retires a 3x3 output window per subtile. The 6 this used to divide by is
+# N-EUREKA's window, which this file was written against.
+NE16_SPATIAL_SUBTILE = 3
+
+
 def _nSubtiles(dims: Tuple[int, int]):
-    return math.ceil(dims[0] / 6) * math.ceil(dims[1] / 6)
+    return math.ceil(dims[0] / NE16_SPATIAL_SUBTILE) * math.ceil(dims[1] / NE16_SPATIAL_SUBTILE)
 
 
 def _findLowestNumberOfSubtilesReshapeOptions(dim: int) -> List[Tuple[int, int]]:
