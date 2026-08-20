@@ -3,10 +3,13 @@
 # SPDX-License-Identifier: Apache-2.0
 
 import os
+import re
 from pathlib import Path
+from typing import Any, Dict, List
 
 import coloredlogs
 import pytest
+from testUtils.pytestRunner import PERF_MARKER, get_worker_id
 
 from Deeploy.Logging import DEFAULT_FMT
 from Deeploy.Logging import DEFAULT_LOGGER as log
@@ -156,3 +159,72 @@ def toolchain(request):
 def cmake_args(request):
     """Return additional CMake arguments."""
     return request.config.getoption("--cmake-args")
+
+
+# ---------------------------------------------------------------------------
+# Performance summary
+#
+# Every test funnels through run_and_assert_test, which prints one PERF_MARKER
+# line per simulation. pytest_runtest_logreport runs on the xdist master for
+# every worker's report, so scraping the captured stdout there is what makes the
+# numbers from all four workers land in one process. Under GitHub Actions the
+# same table is appended to the job summary, so the cycles show up on the check
+# page without opening the log.
+# ---------------------------------------------------------------------------
+
+_PERF_RESULTS: List[Dict[str, Any]] = []
+
+_CYCLES_RE = re.compile(re.escape(PERF_MARKER) + r"\s+runtime_cycles=(\d+)")
+
+
+def pytest_runtest_logreport(report: pytest.TestReport) -> None:
+    """Collect the runtime cycles each test reported."""
+    if report.when != "call" or report.outcome not in ("passed", "failed"):
+        return
+
+    blob = "\n".join(filter(None, [getattr(report, "capstdout", None), getattr(report, "capstderr", None)]))
+    matches = _CYCLES_RE.findall(blob)
+    if not matches:
+        return
+
+    # A test that runs several simulations reports the last one, matching what
+    # its assertions were made against.
+    _PERF_RESULTS.append({
+        "nodeid": report.nodeid,
+        "outcome": report.outcome,
+        "cycles": int(matches[-1]),
+    })
+
+
+def pytest_terminal_summary(terminalreporter, exitstatus, config) -> None:  # noqa: ARG001
+    """Print the cycle table and append it to the GitHub Actions job summary."""
+    # This hook also fires in every xdist worker, each holding only the tests it
+    # ran. The master's logreport hook sees all of them, so it is the only one
+    # with a complete table -- and the only one that may append to the job
+    # summary, which is a shared file.
+    if get_worker_id() != "master" or not _PERF_RESULTS:
+        return
+
+    results = sorted(_PERF_RESULTS, key = lambda r: r["nodeid"])
+
+    terminalreporter.write_sep("=", "Performance Summary")
+    width = max(len(r["nodeid"]) for r in results)
+    for r in results:
+        mark = "PASS" if r["outcome"] == "passed" else "FAIL"
+        terminalreporter.write_line(f"  [{mark}] {r['nodeid']:<{width}}  {r['cycles']:>12,} cycles")
+
+    summaryPath = os.environ.get("GITHUB_STEP_SUMMARY")
+    if not summaryPath:
+        return
+
+    lines = ["## Performance Summary", "", "| Test | Status | Runtime (cycles) |", "|---|:---:|---:|"]
+    for r in results:
+        status = ":white_check_mark:" if r["outcome"] == "passed" else ":x:"
+        lines.append(f"| `{r['nodeid']}` | {status} | {r['cycles']:,} |")
+    lines.append("")
+
+    try:
+        with open(summaryPath, "a") as f:
+            f.write("\n".join(lines) + "\n")
+    except OSError as e:
+        terminalreporter.write_line(f"[perf-summary] could not write GITHUB_STEP_SUMMARY: {e}")

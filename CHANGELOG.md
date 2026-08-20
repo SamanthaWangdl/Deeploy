@@ -23,6 +23,7 @@ This file contains the changelog for the Deeploy project. The changelog is divid
 - Fix GAP9 L3 Board Tests: readfs Flash Ordering and Duplicate Input Data [#196](https://github.com/pulp-platform/Deeploy/pull/196)
 - Add SoCDAML Part III: hands-on lab for adding a new int8 operator [#194](https://github.com/pulp-platform/Deeploy/pull/194)
 
+- Report Test Cycles in PyTest and the CI Job Summary [#207](https://github.com/pulp-platform/Deeploy/pull/207)
 ### Added
 - tests for Regular and DW Conv2D with 3x3 kernel
 - Neureka's engine-aware DW lowering pass `NeurekaNCHWtoNHWCDwConvPass`
@@ -44,6 +45,7 @@ This file contains the changelog for the Deeploy project. The changelog is divid
 - SoCDAML Part III lab: add an int8 `iLeakyReLU` to Deeploy and optimise it on Siracusa from scalar to tiled multi-core XPULP SIMD, with student skeletons and a TA reference under `Tutorials/`
 - Document that `--profileTiling` crashes GVSoC on the larger microLlama graphs (invalid access)
 
+- Per-test cycle counts in the PyTest output and, under GitHub Actions, a `Performance Summary` table on the job summary page
 ### Changed
 - Refactor the topology optimization pass `NeurekaReshapePointwiseConvolutionPass` and Neureka's Tile constraints
 - `aie.dialects` API: move `link_with` from `aie_d.core()` to `aie_d.external_func()` (mlir-aie v1.3.2)

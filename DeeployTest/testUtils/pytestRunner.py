@@ -8,7 +8,11 @@ from typing import List, Literal, Optional
 
 from .core import DeeployTestConfig, build_binary, configure_cmake, get_test_paths, run_complete_test, run_simulation
 
+#: Marker prefix for the per-test cycle line scraped by conftest's perf summary.
+PERF_MARKER = "[deeploy-perf]"
+
 __all__ = [
+    'PERF_MARKER',
     'get_worker_id',
     'create_test_config',
     'run_and_assert_test',
@@ -122,6 +126,12 @@ def run_and_assert_test(test_name: str, config: DeeployTestConfig, skipgen: bool
         AssertionError: If test fails or has errors
     """
     result = run_complete_test(config, skipgen = skipgen, skipsim = skipsim)
+
+    # Printed before the assertions so a failing test still reports its cycles.
+    # stdout is the only channel that reaches the xdist master, where the
+    # end-of-session summary is assembled.
+    if result.runtime_cycles is not None:
+        print(f"{PERF_MARKER} runtime_cycles={result.runtime_cycles}")
 
     assert result.success, (f"Test {test_name} failed with {result.error_count} errors out of {result.total_count}\n"
                             f"Output:\n{result.stdout}")
