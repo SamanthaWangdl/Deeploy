@@ -30,10 +30,8 @@ def dictOfArrays(arrayOfDicts: Sequence[Mapping[KT, VT]]) -> Mapping[KT, List[VT
 
 class TilingHoistingMixIn:
 
-    # Where the hoisted tile-control tables (numTiles, DMA cmd / size / stride, tile dims, base
-    # offsets) go. None keeps them in the tiled level. Setting it to "L2" on GAP9 moves them away
-    # from the cluster master stack, where a deep stack write can corrupt a DMA cmd and hang
-    # mchan_transfer_wait().
+    # JUNGVI: This attributes is here to override manually where the tiling informations are stored.
+    # It is useful for debugging purposes but too nice to expose to the CLI.
     tileControlTableMemoryLevel: Optional[str] = None
 
     _DEFAULT_HOIST_PREFIX = "TILING_CODEGEN_"
