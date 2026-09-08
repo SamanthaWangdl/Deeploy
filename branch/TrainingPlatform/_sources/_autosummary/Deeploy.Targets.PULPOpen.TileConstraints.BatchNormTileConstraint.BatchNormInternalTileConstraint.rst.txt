@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint.BatchNormInternalTileConstraint
+================================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint
+
+.. autoclass:: BatchNormInternalTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~BatchNormInternalTileConstraint.__init__
+      ~BatchNormInternalTileConstraint.addGeometricalConstraint
+      ~BatchNormInternalTileConstraint.addPolicyConstraint
+      ~BatchNormInternalTileConstraint.constructSymbolicNodeRep
+      ~BatchNormInternalTileConstraint.extractBaseAddr
+      ~BatchNormInternalTileConstraint.getBaseAddr
+      ~BatchNormInternalTileConstraint.sanitizeTilingSchedule
+      ~BatchNormInternalTileConstraint.serializeTilingSolution
+      ~BatchNormInternalTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   

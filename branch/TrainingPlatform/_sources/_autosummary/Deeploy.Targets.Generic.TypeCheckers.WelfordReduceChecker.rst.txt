@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers.WelfordReduceChecker
+=========================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TypeCheckers
+
+.. autoclass:: WelfordReduceChecker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~WelfordReduceChecker.__init__
+      ~WelfordReduceChecker.annotateDict
+      ~WelfordReduceChecker.checkOutputType
+      ~WelfordReduceChecker.signature
+      ~WelfordReduceChecker.typeCheck
+      ~WelfordReduceChecker.typeCheckNodeInputs
+      ~WelfordReduceChecker.typeInferGlobalCtxt
+      ~WelfordReduceChecker.typeInferOutput
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~WelfordReduceChecker.typeDict
+   
+   

@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.InPlaceAccumulatorV2Layer
+========================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: InPlaceAccumulatorV2Layer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~InPlaceAccumulatorV2Layer.__init__
+      ~InPlaceAccumulatorV2Layer.bind
+      ~InPlaceAccumulatorV2Layer.broadcast
+      ~InPlaceAccumulatorV2Layer.codeTransform
+      ~InPlaceAccumulatorV2Layer.computeOps
+      ~InPlaceAccumulatorV2Layer.computeShapes
+      ~InPlaceAccumulatorV2Layer.discardCurrentMapper
+      ~InPlaceAccumulatorV2Layer.generate
+      ~InPlaceAccumulatorV2Layer.parse
+      ~InPlaceAccumulatorV2Layer.resetDiscardedMappers
+      ~InPlaceAccumulatorV2Layer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~InPlaceAccumulatorV2Layer.maps
+      ~InPlaceAccumulatorV2Layer.mapper
+      ~InPlaceAccumulatorV2Layer.discardedMappers
+      ~InPlaceAccumulatorV2Layer.node
+   
+   

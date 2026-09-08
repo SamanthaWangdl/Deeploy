@@ -1,0 +1,44 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.SGDTileConstraint.ReluGradTileConstraint
+=================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.SGDTileConstraint
+
+.. autoclass:: ReluGradTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ReluGradTileConstraint.__init__
+      ~ReluGradTileConstraint.addGeometricalConstraint
+      ~ReluGradTileConstraint.addPolicyConstraint
+      ~ReluGradTileConstraint.constructSymbolicNodeRep
+      ~ReluGradTileConstraint.extractBaseAddr
+      ~ReluGradTileConstraint.getBaseAddr
+      ~ReluGradTileConstraint.sanitizeTilingSchedule
+      ~ReluGradTileConstraint.serializeTilingSolution
+      ~ReluGradTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ReluGradTileConstraint.dataIn1Name
+      ~ReluGradTileConstraint.dataIn2Name
+      ~ReluGradTileConstraint.dataOutName
+   
+   

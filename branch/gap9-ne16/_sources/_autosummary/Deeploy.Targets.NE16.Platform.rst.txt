@@ -1,0 +1,37 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.Platform
+=============================
+
+.. automodule:: Deeploy.Targets.NE16.Platform
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      MemoryNE16Platform
+      MemoryNE16PlatformWrapper
+      NE16Platform
+   
+   
+
+   
+   
+   
+
+
+

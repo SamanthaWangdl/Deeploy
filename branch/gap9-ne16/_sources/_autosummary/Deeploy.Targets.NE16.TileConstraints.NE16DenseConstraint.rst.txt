@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.TileConstraints.NE16DenseConstraint
+========================================================
+
+.. automodule:: Deeploy.Targets.NE16.TileConstraints.NE16DenseConstraint
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      NE16DenseConv2DTileConstraint
+      NE16RQSDenseConv2DTileConstraint
+   
+   
+
+   
+   
+   
+
+
+

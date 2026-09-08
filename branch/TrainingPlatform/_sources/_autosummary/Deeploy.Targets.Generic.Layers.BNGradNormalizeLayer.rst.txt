@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.BNGradNormalizeLayer
+===================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: BNGradNormalizeLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~BNGradNormalizeLayer.__init__
+      ~BNGradNormalizeLayer.bind
+      ~BNGradNormalizeLayer.broadcast
+      ~BNGradNormalizeLayer.codeTransform
+      ~BNGradNormalizeLayer.computeOps
+      ~BNGradNormalizeLayer.computeShapes
+      ~BNGradNormalizeLayer.discardCurrentMapper
+      ~BNGradNormalizeLayer.generate
+      ~BNGradNormalizeLayer.parse
+      ~BNGradNormalizeLayer.resetDiscardedMappers
+      ~BNGradNormalizeLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BNGradNormalizeLayer.maps
+      ~BNGradNormalizeLayer.mapper
+      ~BNGradNormalizeLayer.discardedMappers
+      ~BNGradNormalizeLayer.node
+   
+   

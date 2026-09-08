@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.Templates.ConvTemplate
+===========================================
+
+.. automodule:: Deeploy.Targets.NE16.Templates.ConvTemplate
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+      :toctree:
+   
+      getInputAddrOffset
+      getNormQuantConf0
+      ioStridesFromDimensions
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      NE162DDWConvTemplate
+      NE162DDenseConvTemplate
+      NE162DPWConvTemplate
+      NE16ConvTemplate
+   
+   
+
+   
+   
+   
+
+
+

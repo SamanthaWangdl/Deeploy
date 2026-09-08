@@ -1,0 +1,84 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers
+====================================
+
+.. automodule:: Deeploy.Targets.Generic.TypeCheckers
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      AddChecker
+      AveragePoolChecker
+      BNGradNormalizeChecker
+      BNGradReduceChecker
+      BatchNormChecker
+      BatchNormInternalChecker
+      BatchNormalizationGradChecker
+      CLCAChecker
+      ChannelNormalizeChecker
+      ConcatChecker
+      ConvChecker
+      DebugPrintChecker
+      DequantChecker
+      DivChecker
+      DummyChecker
+      GELUChecker
+      GEMMChecker
+      GatherChecker
+      GlobalAveragePoolChecker
+      GlobalAveragePoolGradChecker
+      HardswishChecker
+      InPlaceAccumulatorV2Checker
+      LayerNormChecker
+      LinearAttentionChecker
+      MHSAChecker
+      MSELossChecker
+      MatMulChecker
+      MaxPoolChecker
+      MaxPoolGradChecker
+      MulChecker
+      PULPConvGradBChecker
+      PadChecker
+      QuantChecker
+      RQAddChecker
+      RQGEMMChecker
+      RQHardswishChecker
+      RQIntegerDivChecker
+      RQMatMulChecker
+      ReduceMeanChecker
+      ReduceSumChecker
+      ReluChecker
+      RequantShiftChecker
+      ReshapeChecker
+      SGDChecker
+      SliceChecker
+      SoftmaxChecker
+      SoftmaxCrossEntropyLossChecker
+      TransposeChecker
+      WelfordReduceChecker
+      iNoNormChecker
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,58 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.Deployer.NE16Deployer
+==========================================
+
+.. currentmodule:: Deeploy.Targets.NE16.Deployer
+
+.. autoclass:: NE16Deployer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~NE16Deployer.__init__
+      ~NE16Deployer.annotateNCores
+      ~NE16Deployer.backEnd
+      ~NE16Deployer.bind
+      ~NE16Deployer.codeTransform
+      ~NE16Deployer.exportDeeployState
+      ~NE16Deployer.frontEnd
+      ~NE16Deployer.generateBufferAllocationCode
+      ~NE16Deployer.generateBufferDeAllocationCode
+      ~NE16Deployer.generateBufferInitializationCode
+      ~NE16Deployer.generateEngineInitializationCode
+      ~NE16Deployer.generateFunction
+      ~NE16Deployer.generateGlobalDefinitionCode
+      ~NE16Deployer.generateIOBufferInitializationCode
+      ~NE16Deployer.generateIncludeString
+      ~NE16Deployer.generateInferenceCode
+      ~NE16Deployer.generateInferenceInitializationCode
+      ~NE16Deployer.importDeeployState
+      ~NE16Deployer.inputs
+      ~NE16Deployer.lower
+      ~NE16Deployer.midEnd
+      ~NE16Deployer.numberOfOps
+      ~NE16Deployer.outputs
+      ~NE16Deployer.parse
+      ~NE16Deployer.prepare
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~NE16Deployer.worstCaseBufferSize
+   
+   

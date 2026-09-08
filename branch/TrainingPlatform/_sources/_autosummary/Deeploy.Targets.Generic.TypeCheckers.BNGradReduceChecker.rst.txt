@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers.BNGradReduceChecker
+========================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TypeCheckers
+
+.. autoclass:: BNGradReduceChecker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~BNGradReduceChecker.__init__
+      ~BNGradReduceChecker.annotateDict
+      ~BNGradReduceChecker.checkOutputType
+      ~BNGradReduceChecker.signature
+      ~BNGradReduceChecker.typeCheck
+      ~BNGradReduceChecker.typeCheckNodeInputs
+      ~BNGradReduceChecker.typeInferGlobalCtxt
+      ~BNGradReduceChecker.typeInferOutput
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BNGradReduceChecker.typeDict
+   
+   

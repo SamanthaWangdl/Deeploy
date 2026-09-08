@@ -1,0 +1,6 @@
+Deeploy.Targets.NE16.Templates.ConvTemplate.ioStridesFromDimensions
+===================================================================
+
+.. currentmodule:: Deeploy.Targets.NE16.Templates.ConvTemplate
+
+.. autofunction:: ioStridesFromDimensions

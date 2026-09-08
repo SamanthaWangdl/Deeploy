@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Parsers.PerturbRademacherParser
+=======================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Parsers
+
+.. autoclass:: PerturbRademacherParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerturbRademacherParser.__init__
+      ~PerturbRademacherParser.parse
+      ~PerturbRademacherParser.parseInputs
+      ~PerturbRademacherParser.parseNode
+      ~PerturbRademacherParser.parseNodeCtxt
+      ~PerturbRademacherParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PerturbRademacherParser.operatorRepresentation
+   
+   

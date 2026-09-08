@@ -1,0 +1,58 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Redmule.Deployer.RedmuleDeployer
+================================================
+
+.. currentmodule:: Deeploy.Targets.Redmule.Deployer
+
+.. autoclass:: RedmuleDeployer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~RedmuleDeployer.__init__
+      ~RedmuleDeployer.annotateNCores
+      ~RedmuleDeployer.backEnd
+      ~RedmuleDeployer.bind
+      ~RedmuleDeployer.codeTransform
+      ~RedmuleDeployer.exportDeeployState
+      ~RedmuleDeployer.frontEnd
+      ~RedmuleDeployer.generateBufferAllocationCode
+      ~RedmuleDeployer.generateBufferDeAllocationCode
+      ~RedmuleDeployer.generateBufferInitializationCode
+      ~RedmuleDeployer.generateEngineInitializationCode
+      ~RedmuleDeployer.generateFunction
+      ~RedmuleDeployer.generateGlobalDefinitionCode
+      ~RedmuleDeployer.generateIOBufferInitializationCode
+      ~RedmuleDeployer.generateIncludeString
+      ~RedmuleDeployer.generateInferenceCode
+      ~RedmuleDeployer.generateInferenceInitializationCode
+      ~RedmuleDeployer.importDeeployState
+      ~RedmuleDeployer.inputs
+      ~RedmuleDeployer.lower
+      ~RedmuleDeployer.midEnd
+      ~RedmuleDeployer.numberOfOps
+      ~RedmuleDeployer.outputs
+      ~RedmuleDeployer.parse
+      ~RedmuleDeployer.prepare
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~RedmuleDeployer.worstCaseBufferSize
+   
+   

@@ -1,0 +1,45 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.SoftHier.Platform.SoftHierConstantBuffer
+========================================================
+
+.. currentmodule:: Deeploy.Targets.SoftHier.Platform
+
+.. autoclass:: SoftHierConstantBuffer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~SoftHierConstantBuffer.__init__
+      ~SoftHierConstantBuffer.alloc
+      ~SoftHierConstantBuffer.dealloc
+      ~SoftHierConstantBuffer.fromNode
+      ~SoftHierConstantBuffer.has_live_aliases
+      ~SoftHierConstantBuffer.init
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SoftHierConstantBuffer.allocTemplate
+      ~SoftHierConstantBuffer.deallocTemplate
+      ~SoftHierConstantBuffer.initTemplate
+      ~SoftHierConstantBuffer.sizeInBytes
+      ~SoftHierConstantBuffer.values
+      ~SoftHierConstantBuffer.name
+      ~SoftHierConstantBuffer.shape
+   
+   

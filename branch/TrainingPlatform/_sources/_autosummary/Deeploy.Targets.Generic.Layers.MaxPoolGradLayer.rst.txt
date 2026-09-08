@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.MaxPoolGradLayer
+===============================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: MaxPoolGradLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~MaxPoolGradLayer.__init__
+      ~MaxPoolGradLayer.bind
+      ~MaxPoolGradLayer.broadcast
+      ~MaxPoolGradLayer.codeTransform
+      ~MaxPoolGradLayer.computeOps
+      ~MaxPoolGradLayer.computeShapes
+      ~MaxPoolGradLayer.discardCurrentMapper
+      ~MaxPoolGradLayer.generate
+      ~MaxPoolGradLayer.parse
+      ~MaxPoolGradLayer.resetDiscardedMappers
+      ~MaxPoolGradLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MaxPoolGradLayer.maps
+      ~MaxPoolGradLayer.mapper
+      ~MaxPoolGradLayer.discardedMappers
+      ~MaxPoolGradLayer.node
+   
+   

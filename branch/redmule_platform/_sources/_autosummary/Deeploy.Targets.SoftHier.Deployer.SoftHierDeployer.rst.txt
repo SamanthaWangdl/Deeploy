@@ -1,0 +1,57 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.SoftHier.Deployer.SoftHierDeployer
+==================================================
+
+.. currentmodule:: Deeploy.Targets.SoftHier.Deployer
+
+.. autoclass:: SoftHierDeployer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~SoftHierDeployer.__init__
+      ~SoftHierDeployer.backEnd
+      ~SoftHierDeployer.bind
+      ~SoftHierDeployer.codeTransform
+      ~SoftHierDeployer.exportDeeployState
+      ~SoftHierDeployer.frontEnd
+      ~SoftHierDeployer.generateBufferAllocationCode
+      ~SoftHierDeployer.generateBufferDeAllocationCode
+      ~SoftHierDeployer.generateBufferInitializationCode
+      ~SoftHierDeployer.generateEngineInitializationCode
+      ~SoftHierDeployer.generateFunction
+      ~SoftHierDeployer.generateGlobalDefinitionCode
+      ~SoftHierDeployer.generateIOBufferInitializationCode
+      ~SoftHierDeployer.generateIncludeString
+      ~SoftHierDeployer.generateInferenceCode
+      ~SoftHierDeployer.generateInferenceInitializationCode
+      ~SoftHierDeployer.importDeeployState
+      ~SoftHierDeployer.inputs
+      ~SoftHierDeployer.lower
+      ~SoftHierDeployer.midEnd
+      ~SoftHierDeployer.numberOfOps
+      ~SoftHierDeployer.outputs
+      ~SoftHierDeployer.parse
+      ~SoftHierDeployer.prepare
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SoftHierDeployer.worstCaseBufferSize
+   
+   

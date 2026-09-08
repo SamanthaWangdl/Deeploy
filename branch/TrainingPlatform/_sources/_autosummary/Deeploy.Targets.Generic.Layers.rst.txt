@@ -1,0 +1,98 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers
+==============================
+
+.. automodule:: Deeploy.Targets.Generic.Layers
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      AddLayer
+      AveragePoolGradLayer
+      AveragePoolLayer
+      BNGradNormalizeLayer
+      BNGradReduceLayer
+      BatchNormInternalLayer
+      BatchNormalizationGradLayer
+      BatchNormalizationLayer
+      CLCALayer
+      ChannelNormalizeLayer
+      ConcatLayer
+      ConvGradBLayer
+      ConvGradWLayer
+      ConvGradXLayer
+      ConvLayer
+      ConvTransposeLayer
+      DebugPrintLayer
+      DequantLayer
+      DivLayer
+      GELUGradLayer
+      GELULayer
+      GEMMLayer
+      GatherLayer
+      GlobalAveragePoolGradLayer
+      GlobalAveragePoolLayer
+      ITAMaxLayer
+      InPlaceAccumulatorV2Layer
+      LayerNormGradLayer
+      LayerNormLayer
+      LinearAttentionLayer
+      MHSALayer
+      MSELossGradLayer
+      MSELossLayer
+      MatMulLayer
+      MaxPoolGradLayer
+      MaxPoolLayer
+      MulLayer
+      PadLayer
+      PowLayer
+      QuantLayer
+      RQGEMMLayer
+      RQIntegerDivLayer
+      RQMatMulLayer
+      RQSConvLayer
+      RQSiGELULayer
+      RQSiHardswishLayer
+      ReduceMeanLayer
+      ReduceSumLayer
+      ReluGradLayer
+      ReluLayer
+      RequantShiftLayer
+      ReshapeLayer
+      SGDLayer
+      SliceLayer
+      SoftmaxCrossEntropyLossGradLayer
+      SoftmaxCrossEntropyLossLayer
+      SoftmaxGradLayer
+      SoftmaxLayer
+      SqrtLayer
+      TransposeLayer
+      WelfordReduceLayer
+      iHardswishLayer
+      iNoNormLayer
+      iRMSNormLayer
+   
+   
+
+   
+   
+   
+
+
+

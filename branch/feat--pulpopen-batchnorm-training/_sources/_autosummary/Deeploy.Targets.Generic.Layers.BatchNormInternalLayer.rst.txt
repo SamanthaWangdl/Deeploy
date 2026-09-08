@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.BatchNormInternalLayer
+=====================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: BatchNormInternalLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~BatchNormInternalLayer.__init__
+      ~BatchNormInternalLayer.bind
+      ~BatchNormInternalLayer.broadcast
+      ~BatchNormInternalLayer.codeTransform
+      ~BatchNormInternalLayer.computeOps
+      ~BatchNormInternalLayer.computeShapes
+      ~BatchNormInternalLayer.discardCurrentMapper
+      ~BatchNormInternalLayer.generate
+      ~BatchNormInternalLayer.parse
+      ~BatchNormInternalLayer.resetDiscardedMappers
+      ~BatchNormInternalLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BatchNormInternalLayer.maps
+      ~BatchNormInternalLayer.mapper
+      ~BatchNormInternalLayer.discardedMappers
+      ~BatchNormInternalLayer.node
+   
+   

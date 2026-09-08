@@ -1,0 +1,57 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Chimera.Deployer.ChimeraDeployer
+================================================
+
+.. currentmodule:: Deeploy.Targets.Chimera.Deployer
+
+.. autoclass:: ChimeraDeployer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ChimeraDeployer.__init__
+      ~ChimeraDeployer.backEnd
+      ~ChimeraDeployer.bind
+      ~ChimeraDeployer.codeTransform
+      ~ChimeraDeployer.exportDeeployState
+      ~ChimeraDeployer.frontEnd
+      ~ChimeraDeployer.generateBufferAllocationCode
+      ~ChimeraDeployer.generateBufferDeAllocationCode
+      ~ChimeraDeployer.generateBufferInitializationCode
+      ~ChimeraDeployer.generateEngineInitializationCode
+      ~ChimeraDeployer.generateFunction
+      ~ChimeraDeployer.generateGlobalDefinitionCode
+      ~ChimeraDeployer.generateIOBufferInitializationCode
+      ~ChimeraDeployer.generateIncludeString
+      ~ChimeraDeployer.generateInferenceCode
+      ~ChimeraDeployer.generateInferenceInitializationCode
+      ~ChimeraDeployer.importDeeployState
+      ~ChimeraDeployer.inputs
+      ~ChimeraDeployer.lower
+      ~ChimeraDeployer.midEnd
+      ~ChimeraDeployer.numberOfOps
+      ~ChimeraDeployer.outputs
+      ~ChimeraDeployer.parse
+      ~ChimeraDeployer.prepare
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ChimeraDeployer.worstCaseBufferSize
+   
+   

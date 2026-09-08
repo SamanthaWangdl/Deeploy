@@ -1,0 +1,44 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.InPlaceAccumulatorV2TileConstraint.InPlaceAccumulatorV2TileConstraint
+==============================================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.InPlaceAccumulatorV2TileConstraint
+
+.. autoclass:: InPlaceAccumulatorV2TileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~InPlaceAccumulatorV2TileConstraint.__init__
+      ~InPlaceAccumulatorV2TileConstraint.addGeometricalConstraint
+      ~InPlaceAccumulatorV2TileConstraint.addPolicyConstraint
+      ~InPlaceAccumulatorV2TileConstraint.constructSymbolicNodeRep
+      ~InPlaceAccumulatorV2TileConstraint.extractBaseAddr
+      ~InPlaceAccumulatorV2TileConstraint.getBaseAddr
+      ~InPlaceAccumulatorV2TileConstraint.sanitizeTilingSchedule
+      ~InPlaceAccumulatorV2TileConstraint.serializeTilingSolution
+      ~InPlaceAccumulatorV2TileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~InPlaceAccumulatorV2TileConstraint.dataIn1Name
+      ~InPlaceAccumulatorV2TileConstraint.dataIn2Name
+      ~InPlaceAccumulatorV2TileConstraint.dataOutName
+   
+   

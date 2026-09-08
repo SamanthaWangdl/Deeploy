@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.PerturbEggrollLayer
+==================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: PerturbEggrollLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerturbEggrollLayer.__init__
+      ~PerturbEggrollLayer.bind
+      ~PerturbEggrollLayer.broadcast
+      ~PerturbEggrollLayer.codeTransform
+      ~PerturbEggrollLayer.computeOps
+      ~PerturbEggrollLayer.computeShapes
+      ~PerturbEggrollLayer.discardCurrentMapper
+      ~PerturbEggrollLayer.generate
+      ~PerturbEggrollLayer.parse
+      ~PerturbEggrollLayer.resetDiscardedMappers
+      ~PerturbEggrollLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PerturbEggrollLayer.maps
+      ~PerturbEggrollLayer.mapper
+      ~PerturbEggrollLayer.discardedMappers
+      ~PerturbEggrollLayer.node
+   
+   

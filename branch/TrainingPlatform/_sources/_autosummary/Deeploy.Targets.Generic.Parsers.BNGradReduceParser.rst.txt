@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Parsers.BNGradReduceParser
+==================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Parsers
+
+.. autoclass:: BNGradReduceParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~BNGradReduceParser.__init__
+      ~BNGradReduceParser.parse
+      ~BNGradReduceParser.parseInputs
+      ~BNGradReduceParser.parseNode
+      ~BNGradReduceParser.parseNodeCtxt
+      ~BNGradReduceParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BNGradReduceParser.operatorRepresentation
+   
+   

@@ -1,0 +1,33 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.Templates.QuantTemplate.PULPQuantTemplate
+==================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.Templates.QuantTemplate
+
+.. autoclass:: PULPQuantTemplate
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PULPQuantTemplate.__init__
+      ~PULPQuantTemplate.alignToContext
+      ~PULPQuantTemplate.computeTransientBuffersSize
+      ~PULPQuantTemplate.generate
+      ~PULPQuantTemplate.hoistTransientBuffers
+      ~PULPQuantTemplate.internalSize
+   
+   
+
+   
+   
+   

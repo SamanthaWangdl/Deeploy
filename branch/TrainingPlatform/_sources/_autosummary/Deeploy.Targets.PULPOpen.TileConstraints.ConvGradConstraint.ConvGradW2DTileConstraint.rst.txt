@@ -1,0 +1,46 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint.ConvGradW2DTileConstraint
+=====================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint
+
+.. autoclass:: ConvGradW2DTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ConvGradW2DTileConstraint.__init__
+      ~ConvGradW2DTileConstraint.addGeometricalConstraint
+      ~ConvGradW2DTileConstraint.addPolicyConstraint
+      ~ConvGradW2DTileConstraint.computeInputTileFromGradOutTile
+      ~ConvGradW2DTileConstraint.constructSymbolicNodeRep
+      ~ConvGradW2DTileConstraint.extraSerializeChecks
+      ~ConvGradW2DTileConstraint.extractBaseAddr
+      ~ConvGradW2DTileConstraint.getBaseAddr
+      ~ConvGradW2DTileConstraint.sanitizeTilingSchedule
+      ~ConvGradW2DTileConstraint.serializeTilingSolution
+      ~ConvGradW2DTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ConvGradW2DTileConstraint.dataInKey
+      ~ConvGradW2DTileConstraint.gradOutKey
+      ~ConvGradW2DTileConstraint.weightKey
+   
+   

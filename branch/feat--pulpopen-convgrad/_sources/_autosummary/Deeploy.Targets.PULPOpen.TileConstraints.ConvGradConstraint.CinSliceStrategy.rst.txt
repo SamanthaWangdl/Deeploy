@@ -1,0 +1,38 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint.CinSliceStrategy
+============================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint
+
+.. autoclass:: CinSliceStrategy
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~CinSliceStrategy.__init__
+      ~CinSliceStrategy.add_constraints
+      ~CinSliceStrategy.applies
+      ~CinSliceStrategy.matches_solution
+      ~CinSliceStrategy.serialize
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CinSliceStrategy.name
+   
+   

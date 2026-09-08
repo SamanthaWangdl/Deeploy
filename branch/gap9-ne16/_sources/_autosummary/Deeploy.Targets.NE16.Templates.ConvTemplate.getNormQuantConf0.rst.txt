@@ -1,0 +1,6 @@
+Deeploy.Targets.NE16.Templates.ConvTemplate.getNormQuantConf0
+=============================================================
+
+.. currentmodule:: Deeploy.Targets.NE16.Templates.ConvTemplate
+
+.. autofunction:: getNormQuantConf0

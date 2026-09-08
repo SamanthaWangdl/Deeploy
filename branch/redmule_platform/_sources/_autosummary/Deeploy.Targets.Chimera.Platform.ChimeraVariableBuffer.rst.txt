@@ -1,0 +1,44 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Chimera.Platform.ChimeraVariableBuffer
+======================================================
+
+.. currentmodule:: Deeploy.Targets.Chimera.Platform
+
+.. autoclass:: ChimeraVariableBuffer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ChimeraVariableBuffer.__init__
+      ~ChimeraVariableBuffer.alloc
+      ~ChimeraVariableBuffer.dealloc
+      ~ChimeraVariableBuffer.fromNode
+      ~ChimeraVariableBuffer.has_live_aliases
+      ~ChimeraVariableBuffer.init
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ChimeraVariableBuffer.allocTemplate
+      ~ChimeraVariableBuffer.deallocTemplate
+      ~ChimeraVariableBuffer.initTemplate
+      ~ChimeraVariableBuffer.sizeInBytes
+      ~ChimeraVariableBuffer.name
+      ~ChimeraVariableBuffer.shape
+   
+   

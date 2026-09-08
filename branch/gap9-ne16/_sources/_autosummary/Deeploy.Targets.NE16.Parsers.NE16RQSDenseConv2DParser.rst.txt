@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.Parsers.NE16RQSDenseConv2DParser
+=====================================================
+
+.. currentmodule:: Deeploy.Targets.NE16.Parsers
+
+.. autoclass:: NE16RQSDenseConv2DParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~NE16RQSDenseConv2DParser.__init__
+      ~NE16RQSDenseConv2DParser.parse
+      ~NE16RQSDenseConv2DParser.parseInputs
+      ~NE16RQSDenseConv2DParser.parseNode
+      ~NE16RQSDenseConv2DParser.parseNodeCtxt
+      ~NE16RQSDenseConv2DParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~NE16RQSDenseConv2DParser.operatorRepresentation
+   
+   

@@ -1,0 +1,34 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.TilingExtension.CodeTransformationPasses.DoubleBufferingTilingCodeGeneration.PerfCounterDoubleBufferingTilingMixIn
+==========================================================================================================================
+
+.. currentmodule:: Deeploy.TilingExtension.CodeTransformationPasses.DoubleBufferingTilingCodeGeneration
+
+.. autoclass:: PerfCounterDoubleBufferingTilingMixIn
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerfCounterDoubleBufferingTilingMixIn.__init__
+      ~PerfCounterDoubleBufferingTilingMixIn.generateAllTilingCode
+      ~PerfCounterDoubleBufferingTilingMixIn.generateLoopCode
+      ~PerfCounterDoubleBufferingTilingMixIn.generateSetupAndTeardownCode
+      ~PerfCounterDoubleBufferingTilingMixIn.injectPerfCounterInit
+      ~PerfCounterDoubleBufferingTilingMixIn.injectPerfCounterKernelWrap
+      ~PerfCounterDoubleBufferingTilingMixIn.injectPerfCounterStop
+   
+   
+
+   
+   
+   

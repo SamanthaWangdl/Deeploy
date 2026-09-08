@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPClusterTiling.PerfCounterPULPClusterTilingGenerationSB
+============================================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPClusterTiling
+
+.. autoclass:: PerfCounterPULPClusterTilingGenerationSB
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerfCounterPULPClusterTilingGenerationSB.__init__
+      ~PerfCounterPULPClusterTilingGenerationSB.apply
+      ~PerfCounterPULPClusterTilingGenerationSB.dereferenceVars
+      ~PerfCounterPULPClusterTilingGenerationSB.extractDynamicReferences
+      ~PerfCounterPULPClusterTilingGenerationSB.generateAllTilingCode
+      ~PerfCounterPULPClusterTilingGenerationSB.generateLoopCode
+      ~PerfCounterPULPClusterTilingGenerationSB.generateSetupAndTeardownCode
+      ~PerfCounterPULPClusterTilingGenerationSB.generateTilingLoop
+      ~PerfCounterPULPClusterTilingGenerationSB.indexVars
+      ~PerfCounterPULPClusterTilingGenerationSB.injectPerfCounterInit
+      ~PerfCounterPULPClusterTilingGenerationSB.injectPerfCounterKernelWrap
+      ~PerfCounterPULPClusterTilingGenerationSB.injectPerfCounterStop
+      ~PerfCounterPULPClusterTilingGenerationSB.isFinalMemoryLevel
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PerfCounterPULPClusterTilingGenerationSB.parseTreeDict
+      ~PerfCounterPULPClusterTilingGenerationSB.prefix
+   
+   

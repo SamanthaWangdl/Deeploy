@@ -1,0 +1,33 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Redmule.Templates.ConvTemplate.RedmuleFloatConvIm2ColTemplate
+=============================================================================
+
+.. currentmodule:: Deeploy.Targets.Redmule.Templates.ConvTemplate
+
+.. autoclass:: RedmuleFloatConvIm2ColTemplate
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~RedmuleFloatConvIm2ColTemplate.__init__
+      ~RedmuleFloatConvIm2ColTemplate.alignToContext
+      ~RedmuleFloatConvIm2ColTemplate.computeTransientBuffersSize
+      ~RedmuleFloatConvIm2ColTemplate.generate
+      ~RedmuleFloatConvIm2ColTemplate.hoistTransientBuffers
+      ~RedmuleFloatConvIm2ColTemplate.internalSize
+   
+   
+
+   
+   
+   

@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.ChannelNormalizeLayer
+====================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: ChannelNormalizeLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ChannelNormalizeLayer.__init__
+      ~ChannelNormalizeLayer.bind
+      ~ChannelNormalizeLayer.broadcast
+      ~ChannelNormalizeLayer.codeTransform
+      ~ChannelNormalizeLayer.computeOps
+      ~ChannelNormalizeLayer.computeShapes
+      ~ChannelNormalizeLayer.discardCurrentMapper
+      ~ChannelNormalizeLayer.generate
+      ~ChannelNormalizeLayer.parse
+      ~ChannelNormalizeLayer.resetDiscardedMappers
+      ~ChannelNormalizeLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ChannelNormalizeLayer.maps
+      ~ChannelNormalizeLayer.mapper
+      ~ChannelNormalizeLayer.discardedMappers
+      ~ChannelNormalizeLayer.node
+   
+   

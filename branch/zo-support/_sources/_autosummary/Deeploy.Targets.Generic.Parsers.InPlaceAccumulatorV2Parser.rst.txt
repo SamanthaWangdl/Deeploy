@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Parsers.InPlaceAccumulatorV2Parser
+==========================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Parsers
+
+.. autoclass:: InPlaceAccumulatorV2Parser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~InPlaceAccumulatorV2Parser.__init__
+      ~InPlaceAccumulatorV2Parser.parse
+      ~InPlaceAccumulatorV2Parser.parseInputs
+      ~InPlaceAccumulatorV2Parser.parseNode
+      ~InPlaceAccumulatorV2Parser.parseNodeCtxt
+      ~InPlaceAccumulatorV2Parser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~InPlaceAccumulatorV2Parser.operatorRepresentation
+   
+   

@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Redmule.Parsers.GEMMRedmuleParser
+=================================================
+
+.. currentmodule:: Deeploy.Targets.Redmule.Parsers
+
+.. autoclass:: GEMMRedmuleParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~GEMMRedmuleParser.__init__
+      ~GEMMRedmuleParser.parse
+      ~GEMMRedmuleParser.parseInputs
+      ~GEMMRedmuleParser.parseNode
+      ~GEMMRedmuleParser.parseNodeCtxt
+      ~GEMMRedmuleParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GEMMRedmuleParser.operatorRepresentation
+   
+   

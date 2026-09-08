@@ -1,0 +1,40 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint
+================================================================
+
+.. automodule:: Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      BNGradNormalizeTileConstraint
+      BNGradReduceTileConstraint
+      BatchNormInternalTileConstraint
+      BatchNormalizationGradTileConstraint
+      ChannelNormalizeTileConstraint
+      WelfordReduceTileConstraint
+   
+   
+
+   
+   
+   
+
+
+

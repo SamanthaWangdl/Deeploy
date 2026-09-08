@@ -1,0 +1,33 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.GAP9.Templates.NE16GEMMTemplate.NE16GEMMTemplate
+================================================================
+
+.. currentmodule:: Deeploy.Targets.GAP9.Templates.NE16GEMMTemplate
+
+.. autoclass:: NE16GEMMTemplate
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~NE16GEMMTemplate.__init__
+      ~NE16GEMMTemplate.alignToContext
+      ~NE16GEMMTemplate.computeTransientBuffersSize
+      ~NE16GEMMTemplate.generate
+      ~NE16GEMMTemplate.hoistTransientBuffers
+      ~NE16GEMMTemplate.internalSize
+   
+   
+
+   
+   
+   

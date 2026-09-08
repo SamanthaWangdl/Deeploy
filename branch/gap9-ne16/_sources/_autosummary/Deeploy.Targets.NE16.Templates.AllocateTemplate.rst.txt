@@ -1,0 +1,27 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.Templates.AllocateTemplate
+===============================================
+
+.. automodule:: Deeploy.Targets.NE16.Templates.AllocateTemplate
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

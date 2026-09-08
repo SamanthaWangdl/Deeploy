@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint.WelfordReduceTileConstraint
+============================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint
+
+.. autoclass:: WelfordReduceTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~WelfordReduceTileConstraint.__init__
+      ~WelfordReduceTileConstraint.addGeometricalConstraint
+      ~WelfordReduceTileConstraint.addPolicyConstraint
+      ~WelfordReduceTileConstraint.constructSymbolicNodeRep
+      ~WelfordReduceTileConstraint.extractBaseAddr
+      ~WelfordReduceTileConstraint.getBaseAddr
+      ~WelfordReduceTileConstraint.sanitizeTilingSchedule
+      ~WelfordReduceTileConstraint.serializeTilingSolution
+      ~WelfordReduceTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   

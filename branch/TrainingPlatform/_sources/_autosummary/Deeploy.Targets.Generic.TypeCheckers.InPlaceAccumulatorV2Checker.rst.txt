@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers.InPlaceAccumulatorV2Checker
+================================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TypeCheckers
+
+.. autoclass:: InPlaceAccumulatorV2Checker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~InPlaceAccumulatorV2Checker.__init__
+      ~InPlaceAccumulatorV2Checker.annotateDict
+      ~InPlaceAccumulatorV2Checker.checkOutputType
+      ~InPlaceAccumulatorV2Checker.signature
+      ~InPlaceAccumulatorV2Checker.typeCheck
+      ~InPlaceAccumulatorV2Checker.typeCheckNodeInputs
+      ~InPlaceAccumulatorV2Checker.typeInferGlobalCtxt
+      ~InPlaceAccumulatorV2Checker.typeInferOutput
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~InPlaceAccumulatorV2Checker.typeDict
+   
+   

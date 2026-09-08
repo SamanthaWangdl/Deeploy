@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Redmule.TileConstraints.GEMMTileConstraint.RedmuleGEMMTileConstraint
+====================================================================================
+
+.. currentmodule:: Deeploy.Targets.Redmule.TileConstraints.GEMMTileConstraint
+
+.. autoclass:: RedmuleGEMMTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~RedmuleGEMMTileConstraint.__init__
+      ~RedmuleGEMMTileConstraint.addGeometricalConstraint
+      ~RedmuleGEMMTileConstraint.addPolicyConstraint
+      ~RedmuleGEMMTileConstraint.constructSymbolicNodeRep
+      ~RedmuleGEMMTileConstraint.extractBaseAddr
+      ~RedmuleGEMMTileConstraint.getBaseAddr
+      ~RedmuleGEMMTileConstraint.sanitizeTilingSchedule
+      ~RedmuleGEMMTileConstraint.serializeTilingSolution
+      ~RedmuleGEMMTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   

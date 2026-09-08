@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint.BNGradNormalizeTileConstraint
+==============================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint
+
+.. autoclass:: BNGradNormalizeTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~BNGradNormalizeTileConstraint.__init__
+      ~BNGradNormalizeTileConstraint.addGeometricalConstraint
+      ~BNGradNormalizeTileConstraint.addPolicyConstraint
+      ~BNGradNormalizeTileConstraint.constructSymbolicNodeRep
+      ~BNGradNormalizeTileConstraint.extractBaseAddr
+      ~BNGradNormalizeTileConstraint.getBaseAddr
+      ~BNGradNormalizeTileConstraint.sanitizeTilingSchedule
+      ~BNGradNormalizeTileConstraint.serializeTilingSolution
+      ~BNGradNormalizeTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   

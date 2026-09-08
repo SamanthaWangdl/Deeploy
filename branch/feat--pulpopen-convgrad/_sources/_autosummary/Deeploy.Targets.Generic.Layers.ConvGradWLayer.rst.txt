@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.ConvGradWLayer
+=============================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: ConvGradWLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ConvGradWLayer.__init__
+      ~ConvGradWLayer.bind
+      ~ConvGradWLayer.broadcast
+      ~ConvGradWLayer.codeTransform
+      ~ConvGradWLayer.computeOps
+      ~ConvGradWLayer.computeShapes
+      ~ConvGradWLayer.discardCurrentMapper
+      ~ConvGradWLayer.generate
+      ~ConvGradWLayer.parse
+      ~ConvGradWLayer.resetDiscardedMappers
+      ~ConvGradWLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ConvGradWLayer.maps
+      ~ConvGradWLayer.mapper
+      ~ConvGradWLayer.discardedMappers
+      ~ConvGradWLayer.node
+   
+   

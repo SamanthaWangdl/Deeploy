@@ -1,0 +1,45 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Chimera.Platform.ChimeraConstantBuffer
+======================================================
+
+.. currentmodule:: Deeploy.Targets.Chimera.Platform
+
+.. autoclass:: ChimeraConstantBuffer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ChimeraConstantBuffer.__init__
+      ~ChimeraConstantBuffer.alloc
+      ~ChimeraConstantBuffer.dealloc
+      ~ChimeraConstantBuffer.fromNode
+      ~ChimeraConstantBuffer.has_live_aliases
+      ~ChimeraConstantBuffer.init
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ChimeraConstantBuffer.allocTemplate
+      ~ChimeraConstantBuffer.deallocTemplate
+      ~ChimeraConstantBuffer.initTemplate
+      ~ChimeraConstantBuffer.sizeInBytes
+      ~ChimeraConstantBuffer.values
+      ~ChimeraConstantBuffer.name
+      ~ChimeraConstantBuffer.shape
+   
+   

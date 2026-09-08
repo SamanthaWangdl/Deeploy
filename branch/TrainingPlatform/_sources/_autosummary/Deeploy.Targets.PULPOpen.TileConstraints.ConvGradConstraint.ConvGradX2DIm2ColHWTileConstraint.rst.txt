@@ -1,0 +1,51 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint.ConvGradX2DIm2ColHWTileConstraint
+=============================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint
+
+.. autoclass:: ConvGradX2DIm2ColHWTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ConvGradX2DIm2ColHWTileConstraint.__init__
+      ~ConvGradX2DIm2ColHWTileConstraint.addGeometricalConstraint
+      ~ConvGradX2DIm2ColHWTileConstraint.addPolicyConstraint
+      ~ConvGradX2DIm2ColHWTileConstraint.computeDyCubeFromDxTile
+      ~ConvGradX2DIm2ColHWTileConstraint.constructSymbolicNodeRep
+      ~ConvGradX2DIm2ColHWTileConstraint.extraSerializeChecks
+      ~ConvGradX2DIm2ColHWTileConstraint.extractBaseAddr
+      ~ConvGradX2DIm2ColHWTileConstraint.getBaseAddr
+      ~ConvGradX2DIm2ColHWTileConstraint.get_ch_im_in
+      ~ConvGradX2DIm2ColHWTileConstraint.get_ch_im_out
+      ~ConvGradX2DIm2ColHWTileConstraint.get_dy_channels
+      ~ConvGradX2DIm2ColHWTileConstraint.get_kernel_hw
+      ~ConvGradX2DIm2ColHWTileConstraint.map_onnx_pads_to_template
+      ~ConvGradX2DIm2ColHWTileConstraint.sanitizeTilingSchedule
+      ~ConvGradX2DIm2ColHWTileConstraint.serializeTilingSolution
+      ~ConvGradX2DIm2ColHWTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ConvGradX2DIm2ColHWTileConstraint.gradInKey
+      ~ConvGradX2DIm2ColHWTileConstraint.gradOutKey
+      ~ConvGradX2DIm2ColHWTileConstraint.weightKey
+   
+   

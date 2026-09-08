@@ -1,0 +1,44 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.SoftHier.Platform.SoftHierTransientBuffer
+=========================================================
+
+.. currentmodule:: Deeploy.Targets.SoftHier.Platform
+
+.. autoclass:: SoftHierTransientBuffer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~SoftHierTransientBuffer.__init__
+      ~SoftHierTransientBuffer.alloc
+      ~SoftHierTransientBuffer.dealloc
+      ~SoftHierTransientBuffer.fromNode
+      ~SoftHierTransientBuffer.has_live_aliases
+      ~SoftHierTransientBuffer.init
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SoftHierTransientBuffer.allocTemplate
+      ~SoftHierTransientBuffer.deallocTemplate
+      ~SoftHierTransientBuffer.initTemplate
+      ~SoftHierTransientBuffer.sizeInBytes
+      ~SoftHierTransientBuffer.name
+      ~SoftHierTransientBuffer.shape
+   
+   

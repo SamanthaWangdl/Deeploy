@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers.MaxPoolGradChecker
+=======================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TypeCheckers
+
+.. autoclass:: MaxPoolGradChecker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~MaxPoolGradChecker.__init__
+      ~MaxPoolGradChecker.annotateDict
+      ~MaxPoolGradChecker.checkOutputType
+      ~MaxPoolGradChecker.signature
+      ~MaxPoolGradChecker.typeCheck
+      ~MaxPoolGradChecker.typeCheckNodeInputs
+      ~MaxPoolGradChecker.typeInferGlobalCtxt
+      ~MaxPoolGradChecker.typeInferOutput
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MaxPoolGradChecker.typeDict
+   
+   

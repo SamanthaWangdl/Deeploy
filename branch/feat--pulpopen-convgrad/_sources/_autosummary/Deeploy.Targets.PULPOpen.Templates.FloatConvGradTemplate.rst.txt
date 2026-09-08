@@ -1,0 +1,37 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.Templates.FloatConvGradTemplate
+========================================================
+
+.. automodule:: Deeploy.Targets.PULPOpen.Templates.FloatConvGradTemplate
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      PULP2DFloatConvGradWIm2ColTemplate
+      PULP2DFloatConvGradXIm2ColTemplate
+      PULP2DFloatPWConvGradXTemplate
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers.GlobalAveragePoolChecker
+=============================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TypeCheckers
+
+.. autoclass:: GlobalAveragePoolChecker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~GlobalAveragePoolChecker.__init__
+      ~GlobalAveragePoolChecker.annotateDict
+      ~GlobalAveragePoolChecker.checkOutputType
+      ~GlobalAveragePoolChecker.signature
+      ~GlobalAveragePoolChecker.typeCheck
+      ~GlobalAveragePoolChecker.typeCheckNodeInputs
+      ~GlobalAveragePoolChecker.typeInferGlobalCtxt
+      ~GlobalAveragePoolChecker.typeInferOutput
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~GlobalAveragePoolChecker.typeDict
+   
+   

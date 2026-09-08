@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TileConstraints.EggrollTileConstraint.EggrollTileConstraint
+===================================================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TileConstraints.EggrollTileConstraint
+
+.. autoclass:: EggrollTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~EggrollTileConstraint.__init__
+      ~EggrollTileConstraint.addGeometricalConstraint
+      ~EggrollTileConstraint.addPolicyConstraint
+      ~EggrollTileConstraint.constructSymbolicNodeRep
+      ~EggrollTileConstraint.extractBaseAddr
+      ~EggrollTileConstraint.getBaseAddr
+      ~EggrollTileConstraint.sanitizeTilingSchedule
+      ~EggrollTileConstraint.serializeTilingSolution
+      ~EggrollTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   

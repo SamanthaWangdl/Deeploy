@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.PerturbUniformLayer
+==================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: PerturbUniformLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerturbUniformLayer.__init__
+      ~PerturbUniformLayer.bind
+      ~PerturbUniformLayer.broadcast
+      ~PerturbUniformLayer.codeTransform
+      ~PerturbUniformLayer.computeOps
+      ~PerturbUniformLayer.computeShapes
+      ~PerturbUniformLayer.discardCurrentMapper
+      ~PerturbUniformLayer.generate
+      ~PerturbUniformLayer.parse
+      ~PerturbUniformLayer.resetDiscardedMappers
+      ~PerturbUniformLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PerturbUniformLayer.maps
+      ~PerturbUniformLayer.mapper
+      ~PerturbUniformLayer.discardedMappers
+      ~PerturbUniformLayer.node
+   
+   

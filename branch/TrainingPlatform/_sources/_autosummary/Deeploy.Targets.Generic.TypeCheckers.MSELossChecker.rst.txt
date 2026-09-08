@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers.MSELossChecker
+===================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TypeCheckers
+
+.. autoclass:: MSELossChecker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~MSELossChecker.__init__
+      ~MSELossChecker.annotateDict
+      ~MSELossChecker.checkOutputType
+      ~MSELossChecker.signature
+      ~MSELossChecker.typeCheck
+      ~MSELossChecker.typeCheckNodeInputs
+      ~MSELossChecker.typeInferGlobalCtxt
+      ~MSELossChecker.typeInferOutput
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MSELossChecker.typeDict
+   
+   

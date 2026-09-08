@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.Platform.MemoryNE16PlatformWrapper
+=======================================================
+
+.. currentmodule:: Deeploy.Targets.NE16.Platform
+
+.. autoclass:: MemoryNE16PlatformWrapper
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~MemoryNE16PlatformWrapper.__init__
+      ~MemoryNE16PlatformWrapper.getTargetMemoryLevel
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~MemoryNE16PlatformWrapper.untiledOps
+      ~MemoryNE16PlatformWrapper.engines
+   
+   

@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint.BatchNormalizationGradTileConstraint
+=====================================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint
+
+.. autoclass:: BatchNormalizationGradTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~BatchNormalizationGradTileConstraint.__init__
+      ~BatchNormalizationGradTileConstraint.addGeometricalConstraint
+      ~BatchNormalizationGradTileConstraint.addPolicyConstraint
+      ~BatchNormalizationGradTileConstraint.constructSymbolicNodeRep
+      ~BatchNormalizationGradTileConstraint.extractBaseAddr
+      ~BatchNormalizationGradTileConstraint.getBaseAddr
+      ~BatchNormalizationGradTileConstraint.sanitizeTilingSchedule
+      ~BatchNormalizationGradTileConstraint.serializeTilingSolution
+      ~BatchNormalizationGradTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   

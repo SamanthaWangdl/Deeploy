@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Parsers.ChannelNormalizeParser
+======================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Parsers
+
+.. autoclass:: ChannelNormalizeParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ChannelNormalizeParser.__init__
+      ~ChannelNormalizeParser.parse
+      ~ChannelNormalizeParser.parseInputs
+      ~ChannelNormalizeParser.parseNode
+      ~ChannelNormalizeParser.parseNodeCtxt
+      ~ChannelNormalizeParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ChannelNormalizeParser.operatorRepresentation
+   
+   

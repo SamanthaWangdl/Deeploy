@@ -1,0 +1,50 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPClusterTiling.CombinedProfilingPULPClusterTilingGenerationSB
+==================================================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPClusterTiling
+
+.. autoclass:: CombinedProfilingPULPClusterTilingGenerationSB
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~CombinedProfilingPULPClusterTilingGenerationSB.__init__
+      ~CombinedProfilingPULPClusterTilingGenerationSB.apply
+      ~CombinedProfilingPULPClusterTilingGenerationSB.dereferenceVars
+      ~CombinedProfilingPULPClusterTilingGenerationSB.extractDynamicReferences
+      ~CombinedProfilingPULPClusterTilingGenerationSB.generateAllTilingCode
+      ~CombinedProfilingPULPClusterTilingGenerationSB.generateLoopCode
+      ~CombinedProfilingPULPClusterTilingGenerationSB.generateSetupAndTeardownCode
+      ~CombinedProfilingPULPClusterTilingGenerationSB.generateTilingLoop
+      ~CombinedProfilingPULPClusterTilingGenerationSB.indexVars
+      ~CombinedProfilingPULPClusterTilingGenerationSB.injectPerfCounterInit
+      ~CombinedProfilingPULPClusterTilingGenerationSB.injectPerfCounterKernelWrap
+      ~CombinedProfilingPULPClusterTilingGenerationSB.injectPerfCounterStop
+      ~CombinedProfilingPULPClusterTilingGenerationSB.injectPrintCycleDiff
+      ~CombinedProfilingPULPClusterTilingGenerationSB.isFinalMemoryLevel
+      ~CombinedProfilingPULPClusterTilingGenerationSB.kernelProfilingWrap
+      ~CombinedProfilingPULPClusterTilingGenerationSB.measurementArrayDeclaration
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CombinedProfilingPULPClusterTilingGenerationSB.parseTreeDict
+      ~CombinedProfilingPULPClusterTilingGenerationSB.prefix
+   
+   

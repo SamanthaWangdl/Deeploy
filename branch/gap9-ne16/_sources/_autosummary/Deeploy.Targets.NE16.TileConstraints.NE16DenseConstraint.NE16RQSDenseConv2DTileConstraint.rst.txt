@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.TileConstraints.NE16DenseConstraint.NE16RQSDenseConv2DTileConstraint
+=========================================================================================
+
+.. currentmodule:: Deeploy.Targets.NE16.TileConstraints.NE16DenseConstraint
+
+.. autoclass:: NE16RQSDenseConv2DTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~NE16RQSDenseConv2DTileConstraint.__init__
+      ~NE16RQSDenseConv2DTileConstraint.addGeometricalConstraint
+      ~NE16RQSDenseConv2DTileConstraint.addPolicyConstraint
+      ~NE16RQSDenseConv2DTileConstraint.constructSymbolicNodeRep
+      ~NE16RQSDenseConv2DTileConstraint.extractBaseAddr
+      ~NE16RQSDenseConv2DTileConstraint.getBaseAddr
+      ~NE16RQSDenseConv2DTileConstraint.sanitizeTilingSchedule
+      ~NE16RQSDenseConv2DTileConstraint.serializeTilingSolution
+      ~NE16RQSDenseConv2DTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   

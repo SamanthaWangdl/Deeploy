@@ -1,0 +1,35 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.GAP9.Parsers
+============================
+
+.. automodule:: Deeploy.Targets.GAP9.Parsers
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      NE16GEMMParser
+   
+   
+
+   
+   
+   
+
+
+

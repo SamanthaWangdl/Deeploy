@@ -1,0 +1,33 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.OptimizationPasses.MemoryLevelAnnotationPasses.AnnotateNE16WeightMemoryLevel
+=================================================================================================
+
+.. currentmodule:: Deeploy.Targets.NE16.OptimizationPasses.MemoryLevelAnnotationPasses
+
+.. autoclass:: AnnotateNE16WeightMemoryLevel
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~AnnotateNE16WeightMemoryLevel.__init__
+      ~AnnotateNE16WeightMemoryLevel.apply
+      ~AnnotateNE16WeightMemoryLevel.named_subpasses
+      ~AnnotateNE16WeightMemoryLevel.register_subpass
+      ~AnnotateNE16WeightMemoryLevel.remove_subpass
+      ~AnnotateNE16WeightMemoryLevel.setup_passes
+   
+   
+
+   
+   
+   

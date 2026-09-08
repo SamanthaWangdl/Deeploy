@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.BatchNormalizationGradLayer
+==========================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: BatchNormalizationGradLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~BatchNormalizationGradLayer.__init__
+      ~BatchNormalizationGradLayer.bind
+      ~BatchNormalizationGradLayer.broadcast
+      ~BatchNormalizationGradLayer.codeTransform
+      ~BatchNormalizationGradLayer.computeOps
+      ~BatchNormalizationGradLayer.computeShapes
+      ~BatchNormalizationGradLayer.discardCurrentMapper
+      ~BatchNormalizationGradLayer.generate
+      ~BatchNormalizationGradLayer.parse
+      ~BatchNormalizationGradLayer.resetDiscardedMappers
+      ~BatchNormalizationGradLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BatchNormalizationGradLayer.maps
+      ~BatchNormalizationGradLayer.mapper
+      ~BatchNormalizationGradLayer.discardedMappers
+      ~BatchNormalizationGradLayer.node
+   
+   

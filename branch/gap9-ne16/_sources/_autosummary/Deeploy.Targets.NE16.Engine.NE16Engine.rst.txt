@@ -1,0 +1,40 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.Engine.NE16Engine
+======================================
+
+.. currentmodule:: Deeploy.Targets.NE16.Engine
+
+.. autoclass:: NE16Engine
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~NE16Engine.__init__
+      ~NE16Engine.canExecute
+      ~NE16Engine.isDWConv
+      ~NE16Engine.isDenseConv
+      ~NE16Engine.isPWConv
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~NE16Engine.name
+      ~NE16Engine.Mapping
+      ~NE16Engine.includeList
+   
+   

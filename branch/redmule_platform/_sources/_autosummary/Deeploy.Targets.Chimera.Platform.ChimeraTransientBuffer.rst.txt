@@ -1,0 +1,44 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Chimera.Platform.ChimeraTransientBuffer
+=======================================================
+
+.. currentmodule:: Deeploy.Targets.Chimera.Platform
+
+.. autoclass:: ChimeraTransientBuffer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ChimeraTransientBuffer.__init__
+      ~ChimeraTransientBuffer.alloc
+      ~ChimeraTransientBuffer.dealloc
+      ~ChimeraTransientBuffer.fromNode
+      ~ChimeraTransientBuffer.has_live_aliases
+      ~ChimeraTransientBuffer.init
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ChimeraTransientBuffer.allocTemplate
+      ~ChimeraTransientBuffer.deallocTemplate
+      ~ChimeraTransientBuffer.initTemplate
+      ~ChimeraTransientBuffer.sizeInBytes
+      ~ChimeraTransientBuffer.name
+      ~ChimeraTransientBuffer.shape
+   
+   

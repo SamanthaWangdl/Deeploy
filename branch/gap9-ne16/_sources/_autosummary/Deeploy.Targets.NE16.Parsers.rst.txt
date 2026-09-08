@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.Parsers
+============================
+
+.. automodule:: Deeploy.Targets.NE16.Parsers
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      NE16Conv2DBaseParser
+      NE16DWConv2DParser
+      NE16DenseConv2DParser
+      NE16PWConv2DParser
+      NE16RQSDWConv2DParser
+      NE16RQSDenseConv2DParser
+      NE16RQSPWConv2DParser
+   
+   
+
+   
+   
+   
+
+
+

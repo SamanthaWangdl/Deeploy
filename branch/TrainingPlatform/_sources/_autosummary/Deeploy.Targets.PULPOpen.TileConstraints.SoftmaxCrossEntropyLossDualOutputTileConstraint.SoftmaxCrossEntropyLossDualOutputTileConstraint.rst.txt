@@ -1,0 +1,45 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.SoftmaxCrossEntropyLossDualOutputTileConstraint.SoftmaxCrossEntropyLossDualOutputTileConstraint
+========================================================================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.SoftmaxCrossEntropyLossDualOutputTileConstraint
+
+.. autoclass:: SoftmaxCrossEntropyLossDualOutputTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.__init__
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.addGeometricalConstraint
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.addPolicyConstraint
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.constructSymbolicNodeRep
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.extractBaseAddr
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.getBaseAddr
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.sanitizeTilingSchedule
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.serializeTilingSolution
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.dataIn1Name
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.dataIn2Name
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.dataLossName
+      ~SoftmaxCrossEntropyLossDualOutputTileConstraint.dataOutName
+   
+   

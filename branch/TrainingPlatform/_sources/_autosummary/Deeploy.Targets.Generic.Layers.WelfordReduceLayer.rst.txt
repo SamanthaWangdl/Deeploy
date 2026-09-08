@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.WelfordReduceLayer
+=================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: WelfordReduceLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~WelfordReduceLayer.__init__
+      ~WelfordReduceLayer.bind
+      ~WelfordReduceLayer.broadcast
+      ~WelfordReduceLayer.codeTransform
+      ~WelfordReduceLayer.computeOps
+      ~WelfordReduceLayer.computeShapes
+      ~WelfordReduceLayer.discardCurrentMapper
+      ~WelfordReduceLayer.generate
+      ~WelfordReduceLayer.parse
+      ~WelfordReduceLayer.resetDiscardedMappers
+      ~WelfordReduceLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~WelfordReduceLayer.maps
+      ~WelfordReduceLayer.mapper
+      ~WelfordReduceLayer.discardedMappers
+      ~WelfordReduceLayer.node
+   
+   

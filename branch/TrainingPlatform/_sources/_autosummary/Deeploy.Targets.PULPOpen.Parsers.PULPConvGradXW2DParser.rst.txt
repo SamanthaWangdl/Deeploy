@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.Parsers.PULPConvGradXW2DParser
+=======================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.Parsers
+
+.. autoclass:: PULPConvGradXW2DParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PULPConvGradXW2DParser.__init__
+      ~PULPConvGradXW2DParser.parse
+      ~PULPConvGradXW2DParser.parseInputs
+      ~PULPConvGradXW2DParser.parseNode
+      ~PULPConvGradXW2DParser.parseNodeCtxt
+      ~PULPConvGradXW2DParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PULPConvGradXW2DParser.operatorRepresentation
+   
+   

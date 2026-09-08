@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.PerturbRademacherLayer
+=====================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: PerturbRademacherLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerturbRademacherLayer.__init__
+      ~PerturbRademacherLayer.bind
+      ~PerturbRademacherLayer.broadcast
+      ~PerturbRademacherLayer.codeTransform
+      ~PerturbRademacherLayer.computeOps
+      ~PerturbRademacherLayer.computeShapes
+      ~PerturbRademacherLayer.discardCurrentMapper
+      ~PerturbRademacherLayer.generate
+      ~PerturbRademacherLayer.parse
+      ~PerturbRademacherLayer.resetDiscardedMappers
+      ~PerturbRademacherLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PerturbRademacherLayer.maps
+      ~PerturbRademacherLayer.mapper
+      ~PerturbRademacherLayer.discardedMappers
+      ~PerturbRademacherLayer.node
+   
+   

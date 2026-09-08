@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers.BatchNormalizationGradChecker
+==================================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TypeCheckers
+
+.. autoclass:: BatchNormalizationGradChecker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~BatchNormalizationGradChecker.__init__
+      ~BatchNormalizationGradChecker.annotateDict
+      ~BatchNormalizationGradChecker.checkOutputType
+      ~BatchNormalizationGradChecker.signature
+      ~BatchNormalizationGradChecker.typeCheck
+      ~BatchNormalizationGradChecker.typeCheckNodeInputs
+      ~BatchNormalizationGradChecker.typeInferGlobalCtxt
+      ~BatchNormalizationGradChecker.typeInferOutput
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BatchNormalizationGradChecker.typeDict
+   
+   

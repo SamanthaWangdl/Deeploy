@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.AveragePoolTileConstraint.AveragePoolHWTileConstraint
+==============================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.AveragePoolTileConstraint
+
+.. autoclass:: AveragePoolHWTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~AveragePoolHWTileConstraint.__init__
+      ~AveragePoolHWTileConstraint.addGeometricalConstraint
+      ~AveragePoolHWTileConstraint.addPolicyConstraint
+      ~AveragePoolHWTileConstraint.constructSymbolicNodeRep
+      ~AveragePoolHWTileConstraint.extractBaseAddr
+      ~AveragePoolHWTileConstraint.getBaseAddr
+      ~AveragePoolHWTileConstraint.sanitizeTilingSchedule
+      ~AveragePoolHWTileConstraint.serializeTilingSolution
+      ~AveragePoolHWTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   

@@ -1,0 +1,44 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.NE16.Templates.ConvTemplate.NE162DDWConvTemplate
+================================================================
+
+.. currentmodule:: Deeploy.Targets.NE16.Templates.ConvTemplate
+
+.. autoclass:: NE162DDWConvTemplate
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~NE162DDWConvTemplate.__init__
+      ~NE162DDWConvTemplate.alignToContext
+      ~NE162DDWConvTemplate.computeTransientBuffersSize
+      ~NE162DDWConvTemplate.generate
+      ~NE162DDWConvTemplate.getConf0
+      ~NE162DDWConvTemplate.getCounters
+      ~NE162DDWConvTemplate.getWeightStrides
+      ~NE162DDWConvTemplate.hoistTransientBuffers
+      ~NE162DDWConvTemplate.internalSize
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~NE162DDWConvTemplate.NE16_IS_DEPTHWISE
+      ~NE162DDWConvTemplate.NE16_KERNEL_SHAPE
+      ~NE162DDWConvTemplate.NE16_SUBTILE_OUTPUT_CHANNEL
+   
+   

@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Redmule.TileConstraints.MatmulTileConstraint.RedmuleMatmulTileConstraint
+========================================================================================
+
+.. currentmodule:: Deeploy.Targets.Redmule.TileConstraints.MatmulTileConstraint
+
+.. autoclass:: RedmuleMatmulTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~RedmuleMatmulTileConstraint.__init__
+      ~RedmuleMatmulTileConstraint.addGeometricalConstraint
+      ~RedmuleMatmulTileConstraint.addPolicyConstraint
+      ~RedmuleMatmulTileConstraint.constructSymbolicNodeRep
+      ~RedmuleMatmulTileConstraint.extractBaseAddr
+      ~RedmuleMatmulTileConstraint.getBaseAddr
+      ~RedmuleMatmulTileConstraint.sanitizeTilingSchedule
+      ~RedmuleMatmulTileConstraint.serializeTilingSolution
+      ~RedmuleMatmulTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   

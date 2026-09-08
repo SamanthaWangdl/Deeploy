@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers.ChannelNormalizeChecker
+============================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TypeCheckers
+
+.. autoclass:: ChannelNormalizeChecker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ChannelNormalizeChecker.__init__
+      ~ChannelNormalizeChecker.annotateDict
+      ~ChannelNormalizeChecker.checkOutputType
+      ~ChannelNormalizeChecker.signature
+      ~ChannelNormalizeChecker.typeCheck
+      ~ChannelNormalizeChecker.typeCheckNodeInputs
+      ~ChannelNormalizeChecker.typeInferGlobalCtxt
+      ~ChannelNormalizeChecker.typeInferOutput
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ChannelNormalizeChecker.typeDict
+   
+   

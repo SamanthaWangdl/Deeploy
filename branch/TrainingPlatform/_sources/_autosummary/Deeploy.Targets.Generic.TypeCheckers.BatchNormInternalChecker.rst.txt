@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers.BatchNormInternalChecker
+=============================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TypeCheckers
+
+.. autoclass:: BatchNormInternalChecker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~BatchNormInternalChecker.__init__
+      ~BatchNormInternalChecker.annotateDict
+      ~BatchNormInternalChecker.checkOutputType
+      ~BatchNormInternalChecker.signature
+      ~BatchNormInternalChecker.typeCheck
+      ~BatchNormInternalChecker.typeCheckNodeInputs
+      ~BatchNormInternalChecker.typeInferGlobalCtxt
+      ~BatchNormInternalChecker.typeInferOutput
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BatchNormInternalChecker.typeDict
+   
+   

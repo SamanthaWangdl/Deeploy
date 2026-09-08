@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.BNGradReduceLayer
+================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: BNGradReduceLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~BNGradReduceLayer.__init__
+      ~BNGradReduceLayer.bind
+      ~BNGradReduceLayer.broadcast
+      ~BNGradReduceLayer.codeTransform
+      ~BNGradReduceLayer.computeOps
+      ~BNGradReduceLayer.computeShapes
+      ~BNGradReduceLayer.discardCurrentMapper
+      ~BNGradReduceLayer.generate
+      ~BNGradReduceLayer.parse
+      ~BNGradReduceLayer.resetDiscardedMappers
+      ~BNGradReduceLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~BNGradReduceLayer.maps
+      ~BNGradReduceLayer.mapper
+      ~BNGradReduceLayer.discardedMappers
+      ~BNGradReduceLayer.node
+   
+   

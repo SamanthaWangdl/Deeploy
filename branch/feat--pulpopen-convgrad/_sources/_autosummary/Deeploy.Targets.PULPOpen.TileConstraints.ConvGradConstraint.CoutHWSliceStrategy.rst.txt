@@ -1,0 +1,38 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint.CoutHWSliceStrategy
+===============================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint
+
+.. autoclass:: CoutHWSliceStrategy
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~CoutHWSliceStrategy.__init__
+      ~CoutHWSliceStrategy.add_constraints
+      ~CoutHWSliceStrategy.applies
+      ~CoutHWSliceStrategy.matches_solution
+      ~CoutHWSliceStrategy.serialize
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~CoutHWSliceStrategy.name
+   
+   

@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Parsers.PerturbEggrollParser
+====================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Parsers
+
+.. autoclass:: PerturbEggrollParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerturbEggrollParser.__init__
+      ~PerturbEggrollParser.parse
+      ~PerturbEggrollParser.parseInputs
+      ~PerturbEggrollParser.parseNode
+      ~PerturbEggrollParser.parseNodeCtxt
+      ~PerturbEggrollParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PerturbEggrollParser.operatorRepresentation
+   
+   

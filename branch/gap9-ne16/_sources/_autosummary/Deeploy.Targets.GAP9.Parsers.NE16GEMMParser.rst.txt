@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.GAP9.Parsers.NE16GEMMParser
+===========================================
+
+.. currentmodule:: Deeploy.Targets.GAP9.Parsers
+
+.. autoclass:: NE16GEMMParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~NE16GEMMParser.__init__
+      ~NE16GEMMParser.parse
+      ~NE16GEMMParser.parseInputs
+      ~NE16GEMMParser.parseNode
+      ~NE16GEMMParser.parseNodeCtxt
+      ~NE16GEMMParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~NE16GEMMParser.operatorRepresentation
+   
+   

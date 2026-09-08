@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Parsers.PerturbUniformParser
+====================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Parsers
+
+.. autoclass:: PerturbUniformParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerturbUniformParser.__init__
+      ~PerturbUniformParser.parse
+      ~PerturbUniformParser.parseInputs
+      ~PerturbUniformParser.parseNode
+      ~PerturbUniformParser.parseNodeCtxt
+      ~PerturbUniformParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PerturbUniformParser.operatorRepresentation
+   
+   

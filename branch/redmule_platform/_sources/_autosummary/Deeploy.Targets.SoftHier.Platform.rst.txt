@@ -1,0 +1,40 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.SoftHier.Platform
+=================================
+
+.. automodule:: Deeploy.Targets.SoftHier.Platform
+
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+      :toctree:
+      :template: custom-class-template.rst
+   
+      SoftHierConstantBuffer
+      SoftHierEngine
+      SoftHierPlatform
+      SoftHierStructBuffer
+      SoftHierTransientBuffer
+      SoftHierVariableBuffer
+   
+   
+
+   
+   
+   
+
+
+

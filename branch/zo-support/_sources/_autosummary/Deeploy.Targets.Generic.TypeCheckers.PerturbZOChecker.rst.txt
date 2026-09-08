@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers.PerturbZOChecker
+=====================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TypeCheckers
+
+.. autoclass:: PerturbZOChecker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerturbZOChecker.__init__
+      ~PerturbZOChecker.annotateDict
+      ~PerturbZOChecker.checkOutputType
+      ~PerturbZOChecker.signature
+      ~PerturbZOChecker.typeCheck
+      ~PerturbZOChecker.typeCheckNodeInputs
+      ~PerturbZOChecker.typeInferGlobalCtxt
+      ~PerturbZOChecker.typeInferOutput
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PerturbZOChecker.typeDict
+   
+   

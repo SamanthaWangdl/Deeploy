@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Layers.PerturbNormalLayer
+=================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Layers
+
+.. autoclass:: PerturbNormalLayer
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerturbNormalLayer.__init__
+      ~PerturbNormalLayer.bind
+      ~PerturbNormalLayer.broadcast
+      ~PerturbNormalLayer.codeTransform
+      ~PerturbNormalLayer.computeOps
+      ~PerturbNormalLayer.computeShapes
+      ~PerturbNormalLayer.discardCurrentMapper
+      ~PerturbNormalLayer.generate
+      ~PerturbNormalLayer.parse
+      ~PerturbNormalLayer.resetDiscardedMappers
+      ~PerturbNormalLayer.typeCheck
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PerturbNormalLayer.maps
+      ~PerturbNormalLayer.mapper
+      ~PerturbNormalLayer.discardedMappers
+      ~PerturbNormalLayer.node
+   
+   

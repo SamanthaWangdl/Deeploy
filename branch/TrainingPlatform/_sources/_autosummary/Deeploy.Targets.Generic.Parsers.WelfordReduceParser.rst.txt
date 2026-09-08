@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Parsers.WelfordReduceParser
+===================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Parsers
+
+.. autoclass:: WelfordReduceParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~WelfordReduceParser.__init__
+      ~WelfordReduceParser.parse
+      ~WelfordReduceParser.parseInputs
+      ~WelfordReduceParser.parseNode
+      ~WelfordReduceParser.parseNodeCtxt
+      ~WelfordReduceParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~WelfordReduceParser.operatorRepresentation
+   
+   

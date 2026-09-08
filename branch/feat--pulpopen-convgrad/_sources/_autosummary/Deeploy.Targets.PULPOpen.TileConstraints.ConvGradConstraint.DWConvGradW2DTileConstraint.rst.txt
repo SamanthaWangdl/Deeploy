@@ -1,0 +1,47 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint.DWConvGradW2DTileConstraint
+=======================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint
+
+.. autoclass:: DWConvGradW2DTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~DWConvGradW2DTileConstraint.__init__
+      ~DWConvGradW2DTileConstraint.addGeometricalConstraint
+      ~DWConvGradW2DTileConstraint.addPolicyConstraint
+      ~DWConvGradW2DTileConstraint.computeInputTileFromGradOutTile
+      ~DWConvGradW2DTileConstraint.constructSymbolicNodeRep
+      ~DWConvGradW2DTileConstraint.extraSerializeChecks
+      ~DWConvGradW2DTileConstraint.extractBaseAddr
+      ~DWConvGradW2DTileConstraint.getBaseAddr
+      ~DWConvGradW2DTileConstraint.sanitizeTilingSchedule
+      ~DWConvGradW2DTileConstraint.serializeTilingSolution
+      ~DWConvGradW2DTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~DWConvGradW2DTileConstraint.dataInKey
+      ~DWConvGradW2DTileConstraint.gradOutKey
+      ~DWConvGradW2DTileConstraint.strategies
+      ~DWConvGradW2DTileConstraint.weightKey
+   
+   

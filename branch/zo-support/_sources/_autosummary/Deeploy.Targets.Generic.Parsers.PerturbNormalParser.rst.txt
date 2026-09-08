@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Parsers.PerturbNormalParser
+===================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Parsers
+
+.. autoclass:: PerturbNormalParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerturbNormalParser.__init__
+      ~PerturbNormalParser.parse
+      ~PerturbNormalParser.parseInputs
+      ~PerturbNormalParser.parseNode
+      ~PerturbNormalParser.parseNodeCtxt
+      ~PerturbNormalParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PerturbNormalParser.operatorRepresentation
+   
+   

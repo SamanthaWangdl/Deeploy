@@ -1,0 +1,41 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.TypeCheckers.PULPConvGradBChecker
+=========================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.TypeCheckers
+
+.. autoclass:: PULPConvGradBChecker
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PULPConvGradBChecker.__init__
+      ~PULPConvGradBChecker.annotateDict
+      ~PULPConvGradBChecker.checkOutputType
+      ~PULPConvGradBChecker.signature
+      ~PULPConvGradBChecker.typeCheck
+      ~PULPConvGradBChecker.typeCheckNodeInputs
+      ~PULPConvGradBChecker.typeInferGlobalCtxt
+      ~PULPConvGradBChecker.typeInferOutput
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PULPConvGradBChecker.typeDict
+   
+   

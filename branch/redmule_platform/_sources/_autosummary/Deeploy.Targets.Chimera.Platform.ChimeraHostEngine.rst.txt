@@ -1,0 +1,37 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Chimera.Platform.ChimeraHostEngine
+==================================================
+
+.. currentmodule:: Deeploy.Targets.Chimera.Platform
+
+.. autoclass:: ChimeraHostEngine
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ChimeraHostEngine.__init__
+      ~ChimeraHostEngine.canExecute
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~ChimeraHostEngine.name
+      ~ChimeraHostEngine.Mapping
+      ~ChimeraHostEngine.includeList
+   
+   

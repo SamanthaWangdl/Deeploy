@@ -1,0 +1,33 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.Templates.FloatConvGradTemplate.PULP2DFloatConvGradWIm2ColTemplate
+===========================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.Templates.FloatConvGradTemplate
+
+.. autoclass:: PULP2DFloatConvGradWIm2ColTemplate
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PULP2DFloatConvGradWIm2ColTemplate.__init__
+      ~PULP2DFloatConvGradWIm2ColTemplate.alignToContext
+      ~PULP2DFloatConvGradWIm2ColTemplate.computeTransientBuffersSize
+      ~PULP2DFloatConvGradWIm2ColTemplate.generate
+      ~PULP2DFloatConvGradWIm2ColTemplate.hoistTransientBuffers
+      ~PULP2DFloatConvGradWIm2ColTemplate.internalSize
+   
+   
+
+   
+   
+   

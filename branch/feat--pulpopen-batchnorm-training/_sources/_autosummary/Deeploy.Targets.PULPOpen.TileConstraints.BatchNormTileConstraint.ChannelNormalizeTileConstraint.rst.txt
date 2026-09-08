@@ -1,0 +1,36 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint.ChannelNormalizeTileConstraint
+===============================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.BatchNormTileConstraint
+
+.. autoclass:: ChannelNormalizeTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~ChannelNormalizeTileConstraint.__init__
+      ~ChannelNormalizeTileConstraint.addGeometricalConstraint
+      ~ChannelNormalizeTileConstraint.addPolicyConstraint
+      ~ChannelNormalizeTileConstraint.constructSymbolicNodeRep
+      ~ChannelNormalizeTileConstraint.extractBaseAddr
+      ~ChannelNormalizeTileConstraint.getBaseAddr
+      ~ChannelNormalizeTileConstraint.sanitizeTilingSchedule
+      ~ChannelNormalizeTileConstraint.serializeTilingSolution
+      ~ChannelNormalizeTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   

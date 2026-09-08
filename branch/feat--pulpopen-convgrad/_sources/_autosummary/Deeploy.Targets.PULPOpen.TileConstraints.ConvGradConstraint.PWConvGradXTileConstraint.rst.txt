@@ -1,0 +1,52 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint.PWConvGradXTileConstraint
+=====================================================================================
+
+.. currentmodule:: Deeploy.Targets.PULPOpen.TileConstraints.ConvGradConstraint
+
+.. autoclass:: PWConvGradXTileConstraint
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PWConvGradXTileConstraint.__init__
+      ~PWConvGradXTileConstraint.addGeometricalConstraint
+      ~PWConvGradXTileConstraint.addPolicyConstraint
+      ~PWConvGradXTileConstraint.computeDyCubeFromDxTile
+      ~PWConvGradXTileConstraint.constructSymbolicNodeRep
+      ~PWConvGradXTileConstraint.extraSerializeChecks
+      ~PWConvGradXTileConstraint.extractBaseAddr
+      ~PWConvGradXTileConstraint.getBaseAddr
+      ~PWConvGradXTileConstraint.get_ch_im_in
+      ~PWConvGradXTileConstraint.get_ch_im_out
+      ~PWConvGradXTileConstraint.get_dy_channels
+      ~PWConvGradXTileConstraint.get_kernel_hw
+      ~PWConvGradXTileConstraint.map_onnx_pads_to_template
+      ~PWConvGradXTileConstraint.sanitizeTilingSchedule
+      ~PWConvGradXTileConstraint.serializeTilingSolution
+      ~PWConvGradXTileConstraint.wrapTilingSolution
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PWConvGradXTileConstraint.HW_PIN_BUDGET_BYTES
+      ~PWConvGradXTileConstraint.gradInKey
+      ~PWConvGradXTileConstraint.gradOutKey
+      ~PWConvGradXTileConstraint.weightKey
+   
+   

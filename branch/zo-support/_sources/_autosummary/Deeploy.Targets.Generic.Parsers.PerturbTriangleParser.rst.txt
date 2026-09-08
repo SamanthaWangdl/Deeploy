@@ -1,0 +1,39 @@
+.. SPDX-FileCopyrightText: 2024 ETH Zurich and University of Bologna
+..
+.. SPDX-License-Identifier: Apache-2.0
+
+Deeploy.Targets.Generic.Parsers.PerturbTriangleParser
+=====================================================
+
+.. currentmodule:: Deeploy.Targets.Generic.Parsers
+
+.. autoclass:: PerturbTriangleParser
+   :members:
+   :show-inheritance:
+   :inherited-members:
+
+   
+   
+   .. rubric:: Methods
+   .. automethod:: __init__
+
+   .. autosummary::
+   
+      ~PerturbTriangleParser.__init__
+      ~PerturbTriangleParser.parse
+      ~PerturbTriangleParser.parseInputs
+      ~PerturbTriangleParser.parseNode
+      ~PerturbTriangleParser.parseNodeCtxt
+      ~PerturbTriangleParser.parseOutputs
+   
+   
+
+   
+   
+   .. rubric:: Attributes
+
+   .. autosummary::
+   
+      ~PerturbTriangleParser.operatorRepresentation
+   
+   
