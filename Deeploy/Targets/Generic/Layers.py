@@ -810,3 +810,15 @@ class GlobalMaxPoolLayer(ONNXLayer):
         opRep = self.mapper.parser.operatorRepresentation
         # (spatial_size - 1) comparisons per output channel
         return int(opRep['batch_size'] * opRep['num_channels'] * (opRep['spatial_size'] - 1))
+
+
+class MSELossLayer(ONNXLayer):
+
+    def __init__(self, maps: List[NodeMapper]):
+        super().__init__(maps)
+
+
+class MSELossGradLayer(ONNXLayer):
+
+    def __init__(self, maps: List[NodeMapper]):
+        super().__init__(maps)
