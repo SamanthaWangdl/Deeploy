@@ -796,6 +796,12 @@ class AveragePoolLayer(ONNXLayer):
         return opRep['data_out_size'] * kernel_elements
 
 
+class AveragePoolGradLayer(ONNXLayer):
+
+    def __init__(self, maps: List[NodeMapper]):
+        super().__init__(maps)
+
+
 class GlobalAveragePoolLayer(ONNXLayer):
 
     def computeOps(self):
