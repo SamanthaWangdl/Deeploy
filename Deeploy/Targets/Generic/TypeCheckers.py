@@ -629,3 +629,18 @@ class RMSNormChecker(SignPropTypeChecker):
             return [True]
         else:
             return [False]
+
+
+class PULPConvGradBChecker(SignPropTypeChecker):
+    """TypeChecker for ConvGradB which only has one input (output_grad)"""
+
+    def __init__(self, input_types: Sequence[Type[Pointer]], output_types: Sequence[Type[Pointer]]):
+        super().__init__(input_types, output_types)
+
+    def _inferNumLevels(self, inputs: List[VariableBuffer],
+                        operatorRepresentation: OperatorRepresentation) -> List[int]:
+        return [inputs[0].nLevels]
+
+    def _inferSignedness(self, inputs: List[VariableBuffer],
+                         operatorRepresentation: OperatorRepresentation) -> List[bool]:
+        return [inputs[0]._signed]

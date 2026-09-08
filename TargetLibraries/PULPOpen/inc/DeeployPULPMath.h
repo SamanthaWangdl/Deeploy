@@ -24,6 +24,7 @@
 #include "pmsis.h"
 
 #include "kernel/Conv.h"
+#include "kernel/ConvGrad.h"
 #include "kernel/GELU.h"
 #include "kernel/Layernorm.h"
 #include "kernel/Matmul.h"

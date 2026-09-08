@@ -43,6 +43,28 @@ add_subdirectory(../third_party/pulp-nn-mixed ${CMAKE_CURRENT_BINARY_DIR}/pulp-n
 target_include_directories(pulp-nn-mixed PUBLIC ${PULP_SDK_INCLUDES})
 target_compile_options(pulp-nn-mixed PUBLIC ${PULP_SDK_COMPILE_FLAGS})
 
+# Add pulp-trainlib integration (used by the ConvGrad family)
+target_include_directories(deeploypulp PUBLIC
+  ${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/include
+)
+
+file(GLOB PULP_TRAINLIB_CONV_SOURCES
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_conv2d_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_im2col_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_conv_dw_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_conv_pw_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_matmul_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_train_utils_fp32.c"
+  "${CMAKE_CURRENT_LIST_DIR}/third_party/pulp-trainlib/lib/sources/pulp_conv_naive_fp32.c"
+)
+target_sources(deeploypulp PRIVATE ${PULP_TRAINLIB_CONV_SOURCES})
+
+# pulp-trainlib sources clash with Deeploy's DMA macros and fp16 alias
+set_source_files_properties(${PULP_TRAINLIB_CONV_SOURCES}
+  PROPERTIES
+  COMPILE_FLAGS "-UUSE_DMA -Dfloat16alt=float"
+)
+
 target_link_libraries(deeploypulp PUBLIC pulp-nn-mixed)
 target_link_libraries(deeploypulp INTERFACE pulp-sdk)
 target_sources(deeploypulp INTERFACE $<TARGET_OBJECTS:pulp-sdk>)

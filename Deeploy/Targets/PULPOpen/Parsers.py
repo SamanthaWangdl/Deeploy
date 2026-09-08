@@ -10,8 +10,8 @@ import onnx_graphsurgeon as gs
 from Deeploy.CommonExtensions.OptimizationPasses.TopologyOptimizationPasses.LoweringOptimizationPasses import \
     isPULPPointwise, isPULPStemConv
 from Deeploy.DeeployTypes import NetworkContext
-from Deeploy.Targets.Generic.Parsers import Conv2DParser, GEMMParser, ReduceMeanParser, RQSConv1DParser, \
-    RQSConv2DParser, RQSParserInterface
+from Deeploy.Targets.Generic.Parsers import Conv2DGradWParser, Conv2DGradXParser, Conv2DParser, GEMMParser, \
+    ReduceMeanParser, RQSConv1DParser, RQSConv2DParser, RQSParserInterface
 
 
 class PULPConv2DParser(RQSConv2DParser):
@@ -541,3 +541,149 @@ class PULPReduceMeanParser(ReduceMeanParser):
             return newCtxt, True
         else:
             return ctxt, False
+
+
+class PULPConvGradX2DParser(Conv2DGradXParser):
+
+    def __init__(self, noBiasHoisting = True):
+        super().__init__(noBiasHoisting)
+
+    def parseNodeCtxt(self,
+                      ctxt: NetworkContext,
+                      node: gs.Node,
+                      channels_first: bool = True) -> Tuple[NetworkContext, bool]:
+
+        newCtxt, ret = super().parseNodeCtxt(ctxt, node, channels_first)
+
+        if ret:
+            self.operatorRepresentation['padding_y_top'] = int(self.operatorRepresentation['pads'][0])
+            self.operatorRepresentation['padding_x_left'] = int(self.operatorRepresentation['pads'][1])
+            self.operatorRepresentation['padding_y_bottom'] = int(self.operatorRepresentation['pads'][2])
+            self.operatorRepresentation['padding_x_right'] = int(self.operatorRepresentation['pads'][3])
+
+            return newCtxt, True
+
+        return ctxt, False
+
+
+class PULPDWConvGradX2DParser(PULPConvGradX2DParser):
+
+    def __init__(self, noBiasHoisting = True):
+        super().__init__(noBiasHoisting)
+
+    def parseNode(self, node: gs.Node) -> bool:
+
+        wellFormed = super().parseNode(node)
+
+        ret = all([
+            self.operatorRepresentation['group'] > 1,
+        ])
+
+        return wellFormed
+
+    def parseNodeCtxt(self,
+                      ctxt: NetworkContext,
+                      node: gs.Node,
+                      channels_first: bool = True) -> Tuple[NetworkContext, bool]:
+
+        newCtxt, ret = super().parseNodeCtxt(ctxt, node, channels_first)
+
+        if self.operatorRepresentation['group'] == ctxt.lookup(self.operatorRepresentation['weight']).shape[0]:
+            return newCtxt, True
+
+        return ctxt, False
+
+
+class PULPPWConvGradX2DParser(PULPConvGradX2DParser):
+
+    def __init__(self, noBiasHoisting = True):
+        super().__init__(noBiasHoisting)
+
+    def parseNode(self, node: gs.Node) -> bool:
+
+        wellFormed = super().parseNode(node)
+
+        kernel_shape = self.operatorRepresentation['kernel_shape']
+        if kernel_shape != [1, 1]:
+            return False
+
+        # The PW ConvGradX kernel (direct dX[ci, hw] = sum_co W[co, ci] *
+        # dY[co, hw]) implicitly assumes dX and dY share the same spatial
+        # extent — i.e. stride == 1. Stride>1 1x1 convolutions (e.g.
+        # ResNet8 downsample shortcuts) need the sparse-write semantics
+        # `dX[ci, stride*y, stride*x] = ...` which only the im2col-tiled
+        # general kernel implements correctly, so reject them here and let
+        # them fall through to ConvGradX2DIm2ColHWTileConstraint.
+        strides = self.operatorRepresentation.get('strides', [1, 1])
+        if list(strides) != [1, 1]:
+            return False
+
+        return wellFormed and True
+
+
+class PULPConvGradW2DParser(Conv2DGradWParser):
+
+    def __init__(self, noBiasHoisting = True):
+        super().__init__(noBiasHoisting)
+
+    def parseNodeCtxt(self,
+                      ctxt: NetworkContext,
+                      node: gs.Node,
+                      channels_first: bool = True) -> Tuple[NetworkContext, bool]:
+
+        newCtxt, ret = super().parseNodeCtxt(ctxt, node, channels_first)
+
+        if ret:
+            self.operatorRepresentation['padding_y_top'] = int(self.operatorRepresentation['pads'][0])
+            self.operatorRepresentation['padding_x_left'] = int(self.operatorRepresentation['pads'][1])
+            self.operatorRepresentation['padding_y_bottom'] = int(self.operatorRepresentation['pads'][2])
+            self.operatorRepresentation['padding_x_right'] = int(self.operatorRepresentation['pads'][3])
+
+            return newCtxt, True
+
+        return ctxt, False
+
+
+class PULPDWConvGradW2DParser(PULPConvGradW2DParser):
+
+    def __init__(self, noBiasHoisting = True):
+        super().__init__(noBiasHoisting)
+
+    def parseNode(self, node: gs.Node) -> bool:
+
+        wellFormed = super().parseNode(node)
+
+        ret = all([
+            self.operatorRepresentation['group'] > 1,
+        ])
+
+        return wellFormed and ret
+
+    def parseNodeCtxt(self,
+                      ctxt: NetworkContext,
+                      node: gs.Node,
+                      channels_first: bool = True) -> Tuple[NetworkContext, bool]:
+
+        newCtxt, ret = super().parseNodeCtxt(ctxt, node, channels_first)
+
+        if self.operatorRepresentation['group'] == ctxt.lookup(self.operatorRepresentation['grad_weight']).shape[0]:
+            return newCtxt, True
+
+        return ctxt, False
+
+
+class PULPPWConvGradW2DParser(PULPConvGradW2DParser):
+
+    def __init__(self, noBiasHoisting = True):
+        super().__init__(noBiasHoisting)
+
+    def parseNode(self, node: gs.Node) -> bool:
+
+        wellFormed = super().parseNode(node)
+
+        kernel_shape = self.operatorRepresentation['kernel_shape']
+
+        if kernel_shape != [1, 1]:
+            return False
+
+        return wellFormed and True

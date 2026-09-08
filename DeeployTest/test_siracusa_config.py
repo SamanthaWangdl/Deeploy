@@ -7,6 +7,12 @@ SIMULATOR = "gvsoc"
 DEFAULT_CORES = 8
 
 KERNEL_TESTS = [
+    # ConvGrad smoke set: one per mapper path (generic, DW, PW x X/W).
+    "Kernels/FP32/ConvGrad",
+    "Kernels/FP32/ConvGradW_DW",
+    "Kernels/FP32/ConvGradW_PW",
+    "Kernels/FP32/ConvGradX_DW",
+    "Kernels/FP32/ConvGradX_PW",
     "Kernels/FP32/ReLU",
     "Kernels/FP32/Softmax/CrossEntropy",
     "Kernels/FP32/Softmax/CrossEntropyGrad",

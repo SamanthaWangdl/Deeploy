@@ -19,8 +19,8 @@ from Deeploy.Targets.Generic.Templates import AddTemplate, ConcatTemplate, Dequa
     GatherTemplate, QuantTemplate, RQSiGELUTemplate, SliceTemplate, iHardswishTemplate
 from Deeploy.Targets.Generic.TypeCheckers import AddChecker, ConcatChecker, ConvChecker, DequantChecker, \
     GatherChecker, GELUChecker, GEMMChecker, HardswishChecker, LayerNormChecker, MatMulChecker, MulChecker, \
-    QuantChecker, ReduceMeanChecker, ReluChecker, ReshapeChecker, RQAddChecker, RQHardswishChecker, SGDChecker, \
-    SliceChecker, SoftmaxChecker, SoftmaxCrossEntropyLossChecker, TransposeChecker
+    PULPConvGradBChecker, QuantChecker, ReduceMeanChecker, ReluChecker, ReshapeChecker, RQAddChecker, \
+    RQHardswishChecker, SGDChecker, SliceChecker, SoftmaxChecker, SoftmaxCrossEntropyLossChecker, TransposeChecker
 from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPClusterSynch import PULPSynchCoresPass
 from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPClusterTiling import PULPClusterTiling
 from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPL3Tiling import PULPL3Tiling
@@ -29,12 +29,13 @@ from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPProfileUntiled import
 from Deeploy.Targets.PULPOpen.DataTypes import PULPDMAFuture
 from Deeploy.Targets.PULPOpen.DMA.L3Dma import l3DmaHack
 from Deeploy.Targets.PULPOpen.DMA.MchanDma import MchanDma
-from Deeploy.Targets.PULPOpen.Templates import ConvTemplate, DMASliceTemplate, FloatAddTemplate, FloatConvTemplate, \
-    FloatGELUTemplate, FloatGemmTemplate, FloatLayernormTemplate, FloatMatMulTemplate, FloatMaxPoolTemplate, \
-    FloatMulTemplate, FloatReduceMeanTemplate, FloatReluTemplate, FloatSoftmaxTemplate, GEMMTemplate, \
-    MatrixVectorTemplate, MaxPoolTemplate, MulTemplate, ReduceMeanTemplate, RequantShiftTemplate, ReshapeTemplate, \
-    RQAddTemplate, RQSiHardswishTemplate, SGDTemplate, SoftmaxCrossEntropyLossTemplate, TallGEMMTemplate, \
-    TransposeTemplate, UniformRequantShiftTemplate, iRMSNormTemplate, iSoftmaxTemplate
+from Deeploy.Targets.PULPOpen.Templates import ConvTemplate, DMASliceTemplate, FloatAddTemplate, \
+    FloatConvGradTemplate, FloatConvTemplate, FloatGELUTemplate, FloatGemmTemplate, FloatLayernormTemplate, \
+    FloatMatMulTemplate, FloatMaxPoolTemplate, FloatMulTemplate, FloatReduceMeanTemplate, FloatReluTemplate, \
+    FloatSoftmaxTemplate, GEMMTemplate, MatrixVectorTemplate, MaxPoolTemplate, MulTemplate, ReduceMeanTemplate, \
+    RequantShiftTemplate, ReshapeTemplate, RQAddTemplate, RQSiHardswishTemplate, SGDTemplate, \
+    SoftmaxCrossEntropyLossTemplate, TallGEMMTemplate, TransposeTemplate, UniformRequantShiftTemplate, \
+    iRMSNormTemplate, iSoftmaxTemplate
 from Deeploy.Targets.PULPOpen.TypeCheckers import PULPConvChecker, PULPLinearChecker, PULPMaxPoolChecker, \
     PULPRequantShiftChecker
 from Deeploy.TilingExtension.CodeTransformationPasses.TilingVariableReplacement import TilingVariableReplacement, \
@@ -298,6 +299,68 @@ PULPMaxPool1DBindings = [
                 MaxPoolTemplate.PULPMaxPool1D_8_Template, ForkTransformer) for type in [int8_t, uint8_t]
 ]
 
+PULPFloatConvGradW2DBindings = [
+    NodeBinding(ConvChecker([PointerClass(float32_t), PointerClass(float32_t)], [PointerClass(float32_t)]),
+                FloatConvGradTemplate.referenceConvGradW2DIm2ColTemplate, ClusterTransformer)
+]
+
+PULPFloatConvGradX2DBindings = [
+    NodeBinding(ConvChecker([PointerClass(float32_t), PointerClass(float32_t)], [PointerClass(float32_t)]),
+                FloatConvGradTemplate.referenceConvGradX2DTemplate, ForkTransformer)
+]
+
+PULPFloatDWConv2DBindings = [
+    NodeBinding(
+        ConvChecker(
+            [PointerClass(float_type), PointerClass(float_type),
+             PointerClass(float_type)], [PointerClass(float_type)]), FloatConvTemplate.referenceDW2DIm2ColTemplate,
+        ForkTransformer) for float_type in FloatDataTypes
+]
+
+PULPFloatDWConvGradX2DBindings = [
+    NodeBinding(ConvChecker([PointerClass(float32_t), PointerClass(float32_t)], [PointerClass(float32_t)]),
+                FloatConvGradTemplate.referenceDWConvGradX2DTiledTemplate, ClusterTransformer)
+]
+
+PULPFloatDWConvGradW2DBindings = [
+    NodeBinding(ConvChecker([PointerClass(float32_t), PointerClass(float32_t)], [PointerClass(float32_t)]),
+                FloatConvGradTemplate.referenceDWConvGradW2DTemplate, ClusterTransformer)
+]
+
+PULPFloatPWConvGradW2DBindings = [
+    NodeBinding(ConvChecker([PointerClass(float32_t), PointerClass(float32_t)], [PointerClass(float32_t)]),
+                FloatConvGradTemplate.referencePWConvGradW2DTemplate, ClusterTransformer)
+]
+
+PULPFloatPWConvGradX2DBindings = [
+    NodeBinding(ConvChecker([PointerClass(float32_t), PointerClass(float32_t)], [PointerClass(float32_t)]),
+                FloatConvGradTemplate.referencePWConvGradX2DTemplate, ClusterTransformer)
+]
+
+PULPFloatConvGradBBindings = [
+    NodeBinding(PULPConvGradBChecker([PointerClass(float32_t)], [PointerClass(float32_t)]),
+                FloatConvGradTemplate.referenceConvGradB2DTemplate, ClusterTransformer)
+]
+
+PULPRQSMatrixVecBindings = [
+    NodeBinding(
+        PULPLinearChecker([PointerClass(type1),
+                           PointerClass(int8_t),
+                           PointerClass(int32_t),
+                           PointerClass(int32_t)], [PointerClass(type2)]), MatrixVectorTemplate.referenceTemplate,
+        ForkTransformer) for type1, type2 in zip([int8_t], [int8_t])
+]
+
+PULPRQSTallGEMMBindings = [
+    NodeBinding(
+        PULPLinearChecker([PointerClass(type1),
+                           PointerClass(int8_t),
+                           PointerClass(int32_t),
+                           PointerClass(int32_t)], [PointerClass(type2)]), TallGEMMTemplate.referenceTemplate,
+        ForkTransformer) for type1, type2 in zip([int8_t], [int8_t])
+]
+
+PULPRQSGEMMBindings = PULPRQSGEMM_8_Binding
 PULPMaxPool2DBindings = [
     NodeBinding(PULPMaxPoolChecker([PointerClass(type)], [PointerClass(type)]),
                 MaxPoolTemplate.PULPMaxPool2D_8_Template, ForkTransformer) for type in [int8_t, uint8_t]
