@@ -17,10 +17,11 @@ from Deeploy.FutureExtension.CodeTransformationPasses.FutureCodeTransformation i
 from Deeploy.MemoryLevelExtension.CodeTransformationPasses.Closure import MemoryAwareClosureGeneration
 from Deeploy.Targets.Generic.Templates import AddTemplate, ConcatTemplate, DequantTemplate, FloatReduceSumTemplate, \
     GatherTemplate, QuantTemplate, RQSiGELUTemplate, SliceTemplate, iHardswishTemplate
-from Deeploy.Targets.Generic.TypeCheckers import AddChecker, ConcatChecker, ConvChecker, DequantChecker, \
-    GatherChecker, GELUChecker, GEMMChecker, HardswishChecker, LayerNormChecker, MatMulChecker, MulChecker, \
-    QuantChecker, ReduceMeanChecker, ReluChecker, ReshapeChecker, RQAddChecker, RQHardswishChecker, SGDChecker, \
-    SliceChecker, SoftmaxChecker, SoftmaxCrossEntropyLossChecker, TransposeChecker
+from Deeploy.Targets.Generic.TypeCheckers import AddChecker, BatchNormalizationGradChecker, BatchNormInternalChecker, \
+    ConcatChecker, ConvChecker, DequantChecker, GatherChecker, GELUChecker, GEMMChecker, HardswishChecker, \
+    LayerNormChecker, MatMulChecker, MulChecker, QuantChecker, ReduceMeanChecker, ReluChecker, ReshapeChecker, \
+    RQAddChecker, RQHardswishChecker, SGDChecker, SliceChecker, SoftmaxChecker, SoftmaxCrossEntropyLossChecker, \
+    TransposeChecker
 from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPClusterSynch import PULPSynchCoresPass
 from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPClusterTiling import PULPClusterTiling
 from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPL3Tiling import PULPL3Tiling
@@ -29,12 +30,13 @@ from Deeploy.Targets.PULPOpen.CodeTransformationPasses.PULPProfileUntiled import
 from Deeploy.Targets.PULPOpen.DataTypes import PULPDMAFuture
 from Deeploy.Targets.PULPOpen.DMA.L3Dma import l3DmaHack
 from Deeploy.Targets.PULPOpen.DMA.MchanDma import MchanDma
-from Deeploy.Targets.PULPOpen.Templates import ConvTemplate, DMASliceTemplate, FloatAddTemplate, FloatConvTemplate, \
-    FloatGELUTemplate, FloatGemmTemplate, FloatLayernormTemplate, FloatMatMulTemplate, FloatMaxPoolTemplate, \
-    FloatMulTemplate, FloatReduceMeanTemplate, FloatReluTemplate, FloatSoftmaxTemplate, GEMMTemplate, \
-    MatrixVectorTemplate, MaxPoolTemplate, MulTemplate, ReduceMeanTemplate, RequantShiftTemplate, ReshapeTemplate, \
-    RQAddTemplate, RQSiHardswishTemplate, SGDTemplate, SoftmaxCrossEntropyLossTemplate, TallGEMMTemplate, \
-    TransposeTemplate, UniformRequantShiftTemplate, iRMSNormTemplate, iSoftmaxTemplate
+from Deeploy.Targets.PULPOpen.Templates import ConvTemplate, DMASliceTemplate, FloatAddTemplate, \
+    FloatBatchNormTemplate, FloatConvTemplate, FloatGELUTemplate, FloatGemmTemplate, FloatLayernormTemplate, \
+    FloatMatMulTemplate, FloatMaxPoolTemplate, FloatMulTemplate, FloatReduceMeanTemplate, FloatReluTemplate, \
+    FloatSoftmaxTemplate, GEMMTemplate, MatrixVectorTemplate, MaxPoolTemplate, MulTemplate, ReduceMeanTemplate, \
+    RequantShiftTemplate, ReshapeTemplate, RQAddTemplate, RQSiHardswishTemplate, SGDTemplate, \
+    SoftmaxCrossEntropyLossTemplate, TallGEMMTemplate, TransposeTemplate, UniformRequantShiftTemplate, \
+    iRMSNormTemplate, iSoftmaxTemplate
 from Deeploy.Targets.PULPOpen.TypeCheckers import PULPConvChecker, PULPLinearChecker, PULPMaxPoolChecker, \
     PULPRequantShiftChecker
 from Deeploy.TilingExtension.CodeTransformationPasses.TilingVariableReplacement import TilingVariableReplacement, \
@@ -296,6 +298,16 @@ PULPRQSGEMMBindings = PULPRQSGEMM_8_Binding
 PULPMaxPool1DBindings = [
     NodeBinding(PULPMaxPoolChecker([PointerClass(type)], [PointerClass(type)]),
                 MaxPoolTemplate.PULPMaxPool1D_8_Template, ForkTransformer) for type in [int8_t, uint8_t]
+]
+
+PULPBatchNormInternalBindings = [
+    NodeBinding(BatchNormInternalChecker([PointerClass(float32_t)] * 5, [PointerClass(float32_t)] * 5),
+                FloatBatchNormTemplate.batchNormInternalTemplate, ForkTransformer)
+]
+
+PULPBatchNormalizationGradBindings = [
+    NodeBinding(BatchNormalizationGradChecker([PointerClass(float32_t)] * 5, [PointerClass(float32_t)] * 3),
+                FloatBatchNormTemplate.batchNormGradTemplate, ForkTransformer)
 ]
 
 PULPMaxPool2DBindings = [

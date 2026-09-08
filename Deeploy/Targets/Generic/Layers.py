@@ -810,3 +810,35 @@ class GlobalMaxPoolLayer(ONNXLayer):
         opRep = self.mapper.parser.operatorRepresentation
         # (spatial_size - 1) comparisons per output channel
         return int(opRep['batch_size'] * opRep['num_channels'] * (opRep['spatial_size'] - 1))
+
+
+class BatchNormInternalLayer(ONNXLayer):
+    """Layer for ORT BatchNormInternal (training-mode BN forward pass)."""
+
+    def __init__(self, maps: List[NodeMapper]):
+        super().__init__(maps)
+
+    def computeOps(self):
+        opRep = self.mapper.parser.operatorRepresentation
+        N = opRep['N']
+        C = opRep['C']
+        H_in = opRep['H_in']
+        W_in = opRep['W_in']
+        # 2 passes over N*C*H*W plus per-channel reductions
+        return N * C * H_in * W_in * 7
+
+
+class BatchNormalizationGradLayer(ONNXLayer):
+    """Layer for ORT BatchNormalizationGrad (BN backward pass)."""
+
+    def __init__(self, maps: List[NodeMapper]):
+        super().__init__(maps)
+
+    def computeOps(self):
+        opRep = self.mapper.parser.operatorRepresentation
+        N = opRep['N']
+        C = opRep['C']
+        H_in = opRep['H_in']
+        W_in = opRep['W_in']
+        # 2 passes for reductions + 1 pass for dX
+        return N * C * H_in * W_in * 10

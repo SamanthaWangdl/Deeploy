@@ -7,6 +7,8 @@ SIMULATOR = "gvsoc"
 DEFAULT_CORES = 8
 
 KERNEL_TESTS = [
+    "Kernels/FP32/BatchNormInternal",
+    "Kernels/FP32/BatchNormalizationGrad",
     "Kernels/FP32/ReLU",
     "Kernels/FP32/Softmax/CrossEntropy",
     "Kernels/FP32/Softmax/CrossEntropyGrad",
